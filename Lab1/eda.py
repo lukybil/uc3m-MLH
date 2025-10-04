@@ -553,16 +553,18 @@ def main():
     print("BONE MARROW TRANSPLANT DATA EXPLORATION")
     print("=" * 80)
 
-    df = load_and_clean_data(
+    df, cat_cols, num_cols = load_and_clean_data(
         "data/bone-marrow.arff",
         CATEGORICAL_COLS,
         NUMERICAL_COLS,
         handle_missing=False,
         scale=False,
         onehot=False,
+        scale_time_based=True,
+        return_cols=True,
     )
 
-    cat_cols, num_cols = explore_data_types(df)
+    # cat_cols, num_cols = explore_data_types(df)
 
     analyze_target_distribution(df)
 

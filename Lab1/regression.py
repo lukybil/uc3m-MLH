@@ -5,11 +5,21 @@ from lifelines import KaplanMeierFitter, CoxPHFitter
 import matplotlib.pyplot as plt
 
 df = pd.read_csv("data/clustered_bone_marrow.csv")
+df_orig = load_and_clean_data(
+    "data/bone-marrow.arff",
+    cat_cols=[],
+    num_cols=[
+        "survival_time",
+    ],
+    handle_missing=False,
+    scale=False,
+    onehot=False,
+)
 
 df["Cluster"] = df["Cluster"].astype(int)
 n_clusters = df["Cluster"].nunique()
 
-T = df["survival_time"]
+T = df_orig["survival_time"]
 E = df["survival_status"]
 
 # Kaplan-Meier survival curves per cluster

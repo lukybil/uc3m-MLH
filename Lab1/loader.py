@@ -12,7 +12,14 @@ from scipy.io import arff
 
 
 def load_and_clean_data(
-    file_path, cat_cols, num_cols, handle_missing=True, scale=True, onehot=True
+    file_path,
+    cat_cols,
+    num_cols,
+    handle_missing=True,
+    scale=True,
+    scale_time_based=False,
+    onehot=True,
+    return_cols=False,
 ):
     """
     Load the ARFF data and perform initial cleaning
@@ -54,19 +61,20 @@ def load_and_clean_data(
     else:
         print("\nNo missing values found.")
 
-    # special handling for time based event columns
-    event_cols = ["time_to_aGvHD_III_IV", "PLTrecovery", "ANCrecovery"]
-    for col in event_cols:
-        if col in df.columns:
-            never_occurred_col = f"{col}_never_occurred"
-            df[never_occurred_col] = (df[col] == 1_000_000).astype(int)
-            # replace 1_000_000 with nan
-            df[col] = df[col].replace(1_000_000, np.nan)
-            # add the new binary col to cat_cols for one-hot encoding
-            if never_occurred_col not in cat_cols:
-                cat_cols.append(never_occurred_col)
-            if col not in num_cols:
-                num_cols.append(col)
+    if scale or scale_time_based:
+        # special handling for time based event columns
+        event_cols = ["time_to_aGvHD_III_IV", "PLTrecovery", "ANCrecovery"]
+        for col in event_cols:
+            if col in df.columns:
+                never_occurred_col = f"{col}_never_occurred"
+                df[never_occurred_col] = (df[col] == 1_000_000).astype(int)
+                # replace 1_000_000 with nan
+                df[col] = df[col].replace(1_000_000, np.nan)
+                # add the new binary col to cat_cols for one-hot encoding
+                if never_occurred_col not in cat_cols:
+                    cat_cols.append(never_occurred_col)
+                if col not in num_cols:
+                    num_cols.append(col)
 
     if handle_missing:
         for col in num_cols:
@@ -95,5 +103,8 @@ def load_and_clean_data(
 
     if onehot:
         df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
+
+    if return_cols:
+        return df, cat_cols, num_cols
 
     return df

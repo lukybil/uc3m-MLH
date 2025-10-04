@@ -4,6 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+import os
 
 correlation_based = {
     "categorical": [
@@ -129,13 +130,15 @@ df["survival_status"] = df_cleaned["survival_status"]
 
 df.to_csv("data/clustered_bone_marrow.csv", index=False)
 
-df_orig = load_and_clean_data(
+df_orig, cat_cols, num_cols = load_and_clean_data(
     "data/bone-marrow.arff",
-    correlation_based["categorical"],
-    num_cols=correlation_based["numerical"],
+    removed_redundant["categorical"],
+    num_cols=removed_redundant["numerical"],
     handle_missing=False,
     onehot=False,
     scale=False,
+    scale_time_based=True,
+    return_cols=True,
 )
 
 df_orig["Cluster"] = df["Cluster_PCA"]
@@ -144,3 +147,61 @@ df_orig.to_csv("data/clustered_bone_marrow_full.csv", index=False)
 
 df_ordered = df_orig.sort_values(by="Cluster")
 df_ordered.to_csv("data/clustered_bone_marrow_ordered.csv", index=False)
+
+# cluster-wise detailed plots
+
+os.makedirs("results", exist_ok=True)
+
+num_col_stats = {}
+for col in num_cols:
+    vals = df_orig[col].dropna()
+    mean = vals.mean()
+    std = vals.std()
+    y_min = min(mean - std, vals.min(), 0)
+    y_max = max(mean + std, vals.max())
+    num_col_stats[col] = {"ymin": y_min, "ymax": y_max}
+
+cat_col_categories = {}
+for col in cat_cols:
+    cat_col_categories[col] = sorted(df_orig[col].dropna().unique())
+
+for cluster_id in sorted(df_orig["Cluster"].unique()):
+    cluster_df = df_orig[df_orig["Cluster"] == cluster_id]
+    n_num = len(num_cols)
+    n_cat = len(cat_cols)
+    n_total = n_num + n_cat
+
+    ncols = 3
+    nrows = int(np.ceil(n_total / ncols))
+
+    fig, axes = plt.subplots(
+        nrows, ncols, figsize=(5 * ncols, 2.5 * nrows), constrained_layout=True
+    )
+    axes = axes.flatten() if n_total > 1 else [axes]
+
+    for idx, col in enumerate(num_cols):
+        ax = axes[idx]
+        vals = cluster_df[col].dropna()
+        mean = vals.mean()
+        std = vals.std()
+        ax.bar([col], [mean], yerr=[std], capsize=8, color="skyblue")
+        ax.set_ylabel("Mean ± Std")
+        ax.set_title(f"{col} (Numerical)")
+        ax.set_ylim(num_col_stats[col]["ymin"], num_col_stats[col]["ymax"])
+
+    for idx, col in enumerate(cat_cols):
+        ax = axes[n_num + idx]
+        all_cats = cat_col_categories[col]
+        counts = cluster_df[col].value_counts(normalize=True)
+        proportions = [counts.get(cat, 0.0) for cat in all_cats]
+        ax.bar([str(cat) for cat in all_cats], proportions, color="orange")
+        ax.set_ylabel("Proportion")
+        ax.set_title(f"{col} (Categorical)")
+        ax.set_ylim(0, 1)
+
+    for ax in axes[n_total:]:
+        ax.axis("off")
+
+    fig.suptitle(f"Cluster {cluster_id} Details", fontsize=16)
+    plt.savefig(f"results/cluster_{cluster_id}_details.png")
+    plt.close(fig)
