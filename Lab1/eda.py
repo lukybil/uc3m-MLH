@@ -310,7 +310,13 @@ def analyze_correlations(df, num_cols):
 
     phik_matrix = df.phik_matrix()
     plt.figure(figsize=(14, 12))
-    sns.heatmap(
+    highlight_mask = np.zeros_like(phik_matrix.values, dtype=bool)
+    if "survival_status" in phik_matrix.columns:
+        idx = phik_matrix.columns.get_loc("survival_status")
+        highlight_mask[idx, :] = True
+        highlight_mask[:, idx] = True
+
+    ax = sns.heatmap(
         phik_matrix.values,
         xticklabels=phik_matrix.columns,
         yticklabels=phik_matrix.index,
@@ -319,7 +325,16 @@ def analyze_correlations(df, num_cols):
         cmap="coolwarm",
         cbar_kws={"label": "Phik Correlation Coefficient"},
         annot_kws={"size": 6},
+        mask=None,
     )
+    if "survival_status" in phik_matrix.columns:
+        for i in range(phik_matrix.shape[0]):
+            ax.add_patch(
+                plt.Rectangle((idx, i), 1, 1, fill=False, edgecolor="gold", lw=2)
+            )
+            ax.add_patch(
+                plt.Rectangle((i, idx), 1, 1, fill=False, edgecolor="gold", lw=2)
+            )
     plt.xticks(fontsize=8)
     plt.yticks(fontsize=8)
     plt.title("Phik Correlation Matrix", fontsize=14)

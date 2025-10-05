@@ -68,6 +68,7 @@ def load_and_clean_data(
             if col in df.columns:
                 never_occurred_col = f"{col}_never_occurred"
                 df[never_occurred_col] = (df[col] == 1_000_000).astype(int)
+                df[never_occurred_col] = df[never_occurred_col].astype("category")
                 # replace 1_000_000 with nan
                 df[col] = df[col].replace(1_000_000, np.nan)
                 # add the new binary col to cat_cols for one-hot encoding
