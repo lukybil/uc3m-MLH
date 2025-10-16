@@ -18,11 +18,20 @@ For the methodology, I used the structure described in the lab assignment. The l
 
 The EDA consisted of multiple analysis steps including plotting the value distrubution per attribute and the attribute's influence on the target attribute (survival\_status). The distribution of the values of time-based attributes revealed that the value 1 000 000 was used if the event had not occured. This would wrongly influence the data during the scaling so I extracted the values into its own column called "\{ColumnName\}\_never\_occured". The final step was the generation of a PHIK correlation matrix which is a more robust version of a classical correlation matrix which additionally contains also the categorical attributes. This revealed which attributes are not correlated with the target attribute and were removed. The PHIK matrix also revealed which attributes are redundant because they were almost 100\% correlated between each other.
 
+\begin{wrapfigure}{r}{0.5\linewidth}
+  \centering
+  \includegraphics[width=0.9\linewidth]{../results/kmeans_pca_clusters.png}
+  \caption{KMeans Clusters Visualized with PCA}
+  \label{fig:kmeans_pca_clusters}
+\end{wrapfigure}
+
 \subsection{Clustering}
 
-For clustering the KMeans algorithm was used because I found it well interpretable. The clusters were created based on the cleaned and preprocessed data: filled missing values, scaled numerical features, one-hot encoded categorical features. Furthermore, the Principal component analysis (PCA) dimensionality reduction was applied on the data before creating the clusters to make them more easily visualizable, remove further redundant attributes, and to help the clustering algorithm. The number of clusters was based on an "elbow" method where the inertia of the clusters for a $k$ is followed and when it starts to decrease more slowly (reaches the elbow), any larger $k$ would lead to diminishing returns.
+For clustering the KMeans algorithm was used because I found it well interpretable. The clusters were created based on the cleaned and preprocessed data: filled missing values, scaled numerical features, one-hot encoded categorical features. Furthermore, the Principal component analysis (PCA) dimensionality reduction was applied on the data before creating the clusters to make them more easily visualizable, remove further redundant attributes, and to help the clustering algorithm. The number of clusters was based on an "elbow" method where the inertia of the clusters for a $k$ is followed and when it starts to decrease more slowly (reaches the elbow), any larger $k$ would lead to diminishing returns. The resulting clusters can be seen in \ref{fig:kmeans_pca_clusters}.
 
-\section{Discussion of Results and Challenges Encountered}
+\section{Discussion of Results}
+
+For the discussion of the results I decided to pick three clusters according to the projected survival time, shown in Figure \ref{fig:km_survival_curves} and Figure \ref{fig:cox_predicted_survival}. The clusters number three, five and seven, being the ones with the respectably best, intermediate, and the worst survival time predictions.
 
 \begin{figure}[h]
   \centering
@@ -30,16 +39,18 @@ For clustering the KMeans algorithm was used because I found it well interpretab
     \centering
     \includegraphics[width=\linewidth]{../results/km_survival_curves.png}
     \caption{Kaplan-Meier Survival Curves}
+    \label{fig:km_survival_curves}
   \end{minipage}
   \begin{minipage}{0.48\textwidth}
     \centering
     \includegraphics[width=\linewidth]{../results/cox_predicted_survival.png}
     \caption{Cox Predicted Survival}
+    \label{fig:cox_predicted_survival}
   \end{minipage}\hfill
 \end{figure}
 
-For the discussion of the results I decided to pick three clusters according to the projected survival time. The clusters number three, five and seven, being the ones with the respectably best, intermediate, and the worst survival time predictions.
-
+\vspace{0.5cm}
+\noindent
 The most notable characteristics of the best cluster, cluster number three, were the following:
 
 \begin{itemize}
@@ -50,6 +61,7 @@ The most notable characteristics of the best cluster, cluster number three, were
   \item Platelet (PLT) Recovery: this group interestingly took the most time on average to recover their platelet's count but all patients did recover them which cannot be said about other groups except group one.
 \end{itemize}
 
+\noindent
 The intermediate group (number five) has a projected survival rate of 50\% after 500 days. These are some of the attributes of this group:
 
 \begin{itemize}
@@ -58,19 +70,55 @@ The intermediate group (number five) has a projected survival rate of 50\% after
   \item aGvHD and extcGvHD: these complications occured to 15-20\% of the patients.
 \end{itemize}
 
+\noindent
 The group with the lowest survival chances was the group seven with the following characteristics:
 
 \begin{itemize}
-  \item
+  \item Risk Group: the majority of the patients, 57\%, was in the high-risk disease group.
+  \item aGvHD and extcGvHD: 29\% developed the former and 14\% the latter. These numbers are decisively higher than the one for the group five.
+  \item Stemcellsource: the most patients (86\%) received peripheral blood stream cells which can be a lower quality stem cell source than the bone marrow
 \end{itemize}
 
-\begin{wrapfigure}{r}{0.5\linewidth}
-  \centering
-  \includegraphics[width=0.9\linewidth]{../results/kmeans_pca_clusters.png}
-  \caption{KMeans Clusters Visualized with PCA}
-\end{wrapfigure}
-
 \section{Conclusion}
-Summary, conclusion, lessons learned?
+
+It was challenging to prepare the data since there were many missing data points and for example the interestingly encoded non-occurence of time-based events where the value of 1 000 000 meant that the event did not occur. After multiple iterations of data pre-processing a usable dataset was produced. I still find it confusing how for some attributes a "0" means a "yes" but for others it means a "no" and vice-versa. If I had seen this sooner, I would have transformed the data so that "1" always means "yes".
+
+Second challenge was to interpret the results without much of a healthcare background. I read shortly about the meaning of the attributes and tried to find some prominent characteristics in the different created clusters. Thanks to PCA, the clusters can be visualized but it is very difficult to interpret what the dimensionally-reduced attribute mean. To visualize clustering done on all attributes is impossible in one graphic, since there are too many dimensions and we only understand three.
+
+Overall a very interesting exercise and I enjoyed every part of it. I have many more generated graphics which will be included in the appendix. Thank you for reading!
+
+\newpage
+\appendix
+\section*{Appendix}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{../eda_plots/phik_correlation_matrix.png}
+  \caption{PHIK Correlation Matrix}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{../eda_plots/correlation_matrix.png}
+  \caption{Correlation Matrix}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{../results/elbow_method.png}
+  \caption{Elbow Method for Optimal Cluster Number}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{../results/compare_clusters_7_5_3_categorical_all.png}
+  \caption{Comparison of Clusters 3, 5, and 7: Categorical Attributes}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{../results/compare_clusters_7_5_3_numerical_all.png}
+  \caption{Comparison of Clusters 3, 5, and 7: Numerical Attributes}
+\end{figure}
 
 \end{document}

@@ -152,21 +152,21 @@ df_cleaned = load_and_clean_data(
 df = df_cleaned.drop(columns=["survival_time", "survival_status"])
 
 # Elbow method for optimal k, when the inertia begins to slow down
-# inertias = []
-# k_range = range(1, 16)
-# for k in k_range:
-#     kmeans = KMeans(n_clusters=k, random_state=99)
-#     kmeans.fit(df.values)
-#     inertias.append(kmeans.inertia_)
+inertias = []
+k_range = range(1, 16)
+for k in k_range:
+    kmeans = KMeans(n_clusters=k, random_state=99)
+    kmeans.fit(df.values)
+    inertias.append(kmeans.inertia_)
 
-# plt.figure(figsize=(7, 4))
-# plt.plot(k_range, inertias, marker="o")
-# plt.xlabel("Number of clusters (k)")
-# plt.ylabel("Inertia")
-# plt.title("Elbow Method For Optimal k")
-# plt.xticks(k_range)
-# plt.tight_layout()
-# plt.show()
+plt.figure(figsize=(7, 4))
+plt.plot(k_range, inertias, marker="o")
+plt.xlabel("Number of clusters (k)")
+plt.ylabel("Inertia")
+plt.title("Elbow Method For Optimal k")
+plt.xticks(k_range)
+plt.tight_layout()
+plt.savefig("results/elbow_method.png")
 
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(df.values)
