@@ -28,7 +28,10 @@ kmf = KaplanMeierFitter()
 for i in range(n_clusters):
     mask = df["Cluster"] == i
     kmf.fit(T[mask], event_observed=E[mask], label=f"Cluster {i}")
-    kmf.plot_survival_function(ci_show=False)
+    color = plt.rcParams["axes.prop_cycle"].by_key()["color"][
+        i % len(plt.rcParams["axes.prop_cycle"].by_key()["color"])
+    ]
+    kmf.plot_survival_function(ci_show=False, color=color)
 plt.title("Kaplan-Meier Survival Curves by Cluster")
 plt.xlabel("Time")
 plt.ylabel("Survival Probability")

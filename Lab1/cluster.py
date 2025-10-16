@@ -8,6 +8,68 @@ import os
 import argparse
 import seaborn as sns
 
+{
+    "categorical": [
+        "Recipientgender",
+        "Stemcellsource",
+        "Donorage35",
+        "IIIV",
+        "Gendermatch",
+        "DonorABO",
+        "RecipientABO",
+        "RecipientRh",
+        "ABOmatch",
+        "CMVstatus",
+        "DonorCMV",
+        "RecipientCMV",
+        "Disease",
+        "Riskgroup",
+        "Txpostrelapse",
+        "Diseasegroup",
+        "HLAmatch",
+        "HLAmismatch",
+        "Antigen",
+        "Alel",
+        "HLAgrI",
+        "Recipientage10",
+        "Recipientageint",
+        "Relapse",
+        "aGvHDIIIIV",
+        "extcGvHD",
+    ],
+    "numerical": [
+        "Donorage",
+        "Recipientage",
+        "CD34kgx10d6",
+        "CD3dCD34",
+        "CD3dkgx10d8",
+        "Rbodymass",
+        "ANCrecovery",
+        "PLTrecovery",
+        "time_to_aGvHD_III_IV",
+        "survival_time",
+        "survival_status",
+    ],
+}
+
+removed_attributes_correlation_based = {
+    "categorical": [
+        "Recipientgender",
+        "IIIV",
+        "Gendermatch",
+        "DonorABO",
+        "RecipientABO",
+        "ABOmatch",
+        "CMVstatus",
+        "DonorCMV",
+        "Antigen",
+        "Alel",
+        "HLAgrI",
+    ],
+    "numerical": [],
+}
+
+
 correlation_based = {
     "categorical": [
         "Stemcellsource",
@@ -38,6 +100,16 @@ correlation_based = {
         "time_to_aGvHD_III_IV",
         "survival_time",
         "survival_status",
+    ],
+}
+
+removed_removed_redundant = {
+    "categorical": [
+        "Donorage35",
+        "Diseasegroup",
+    ],
+    "numerical": [
+        "Rbodymass",
     ],
 }
 
@@ -106,8 +178,15 @@ clusters = kmeans.fit_predict(X_pca)
 df["Cluster_PCA"] = clusters
 
 plt.figure(figsize=(8, 6))
+default_colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 for i in range(n_clusters):
-    plt.scatter(X_pca[clusters == i, 0], X_pca[clusters == i, 1], label=f"Cluster {i}")
+    color = default_colors[i % len(default_colors)]
+    plt.scatter(
+        X_pca[clusters == i, 0],
+        X_pca[clusters == i, 1],
+        label=f"Cluster {i}",
+        color=color,
+    )
 plt.xlabel("PCA 1")
 plt.ylabel("PCA 2")
 plt.title("K-means Clusters (PCA-reduced)")
@@ -321,3 +400,40 @@ if __name__ == "__main__":
         fig.suptitle("Categorical Features: Clusters 7, 5, 3", fontsize=16)
         plt.savefig("results/compare_clusters_7_5_3_categorical_all.png")
         plt.close(fig)
+
+        # export comparison data for clusters 7, 5, 3 to csv
+        import pandas as pd
+
+        num_data = []
+        for col in num_cols:
+            for cid in compare_clusters:
+                vals = df_orig[df_orig["Cluster"] == cid][col].dropna()
+                num_data.append(
+                    {
+                        "feature": col,
+                        "cluster": cid,
+                        "mean": vals.mean(),
+                        "std": vals.std(),
+                    }
+                )
+        num_df = pd.DataFrame(num_data)
+        num_df.to_csv("results/compare_clusters_7_5_3_numerical.csv", index=False)
+
+        cat_data = []
+        for col in cat_cols:
+            all_cats = cat_col_categories[col]
+            for cid in compare_clusters:
+                counts = df_orig[df_orig["Cluster"] == cid][col].value_counts(
+                    normalize=True
+                )
+                for cat in all_cats:
+                    cat_data.append(
+                        {
+                            "feature": col,
+                            "category": cat,
+                            "cluster": cid,
+                            "proportion": counts.get(cat, 0.0),
+                        }
+                    )
+        cat_df = pd.DataFrame(cat_data)
+        cat_df.to_csv("results/compare_clusters_7_5_3_categorical.csv", index=False)
