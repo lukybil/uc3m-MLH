@@ -1,0 +1,100 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[a4paper,top=1.5cm,bottom=1.5cm,left=1.5cm,right=1.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+
+\title{Lab 2 Report}
+\author{Lukas Bilicky}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Methodology Used}
+For the methodology, I followed the structure outlined in the lab assignment, focusing on temporal event analysis and clustering of patient timelines. The lab began with data preprocessing and loading of both timeline events and patient features, followed by clustering analysis and finally the application of Hawkes process modeling to understand event patterns within each cluster.
+
+\subsection{Data Preprocessing}
+
+The preprocessing stage involved loading two main datasets: the timelines data containing temporal events for each patient, and the features data with patient characteristics. I merged these datasets to create a comprehensive view of each patient's profile and event history. The timeline data required careful handling since events were recorded with timestamps and event types, which needed to be properly formatted for both clustering and Hawkes process analysis.
+
+\subsection{Clustering and Cluster Analysis}
+
+\begin{wrapfigure}{r}{0.5\linewidth}
+  \centering
+  \includegraphics[width=0.9\linewidth]{../results/event_distributions_by_cluster.png}
+  \caption{Event Distributions by Cluster}
+  \label{fig:event_distributions_by_cluster}
+\end{wrapfigure}
+
+For clustering, I applied the KMeans algorithm on the patient features since it provides interpretable clusters and works well with the dimensionality of our dataset. The patients were grouped based on their clinical characteristics, and the resulting clusters were then analyzed to understand their distinct event patterns. The number of clusters was chosen to balance interpretability with the diversity of patient profiles in the dataset. Once the clusters were created, I analyzed their characteristics including event distributions, inter-arrival times, and overall event rates to identify meaningful differences between patient groups.
+
+\subsection{Hawkes Process Analysis}
+
+After clustering, I fitted a Hawkes process model to each cluster. The Hawkes process is particularly well-suited for this analysis because medical events often show temporal dependencies where one event can trigger subsequent events. For each cluster, I estimated parameters including the baseline event rate, mean inter-arrival times, and the variability in event timing. This allowed me to quantify how event patterns differ across patient clusters.
+
+\section{Discussion of Results}
+
+The clustering analysis identified four distinct patient groups, each with unique event patterns and temporal characteristics. For the discussion, I will analyze each cluster based on the Hawkes process parameters shown in Table~\ref{tab:hawkes_parameters}, which summarizes the event rate, mean and standard deviation of inter-arrival times, total events, and number of patients per cluster.
+
+\vspace{0.5cm}
+\noindent
+The most active cluster was Cluster 0, with the highest event rate at 2.79 events per unit time and the shortest mean inter-arrival time of 0.13 time units, showing events occurred in quick succession. Despite being the smallest cluster with only 49 patients, it accumulated 538 events averaging about 11 events per patient. Notably, it had the lowest variability (standard deviation of 0.54), indicating more consistent and predictable event timing compared to other clusters, which could suggest that this cluster represents a high-risk group with quicker disease progression.
+
+\noindent
+Cluster 1 represents the largest patient group with 184 patients (44\% of all patients) and intermediate event patterns. With an event rate of 2.62 and mean inter-arrival time of 0.12, it accumulated the most events overall (2024) due to its large size. However, it showed higher variability with a standard deviation of 0.62, suggesting more diverse event timing patterns within this heterogeneous group.
+
+\noindent
+Cluster 2 showed the lowest event activity with an event rate of 2.42 and the longest mean inter-arrival time of 0.16 time units, indicating events were more spread out temporally. This cluster of 90 patients exhibited the highest variability (standard deviation of 0.69), suggesting substantial heterogeneity in event timing and potentially representing patients with less predictable disease evolutions.
+
+\noindent
+Cluster 3 exhibited intermediate characteristics similar to Cluster 1, with an identical event rate of 2.62 and mean inter-arrival time of 0.13. Comprising 93 patients with 1023 events, it showed moderate variability (standard deviation of 0.64).
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    Cluster & Event Rate & Mean Inter-Arrival & Std Inter-Arrival & Total Events & Patients \\
+    \hline
+    0       & 2.79       & 0.13               & 0.54              & 538          & 49       \\
+    1       & 2.62       & 0.12               & 0.62              & 2024         & 184      \\
+    2       & 2.42       & 0.16               & 0.69              & 990          & 90       \\
+    3       & 2.62       & 0.13               & 0.64              & 1023         & 93       \\
+    \hline
+  \end{tabular}
+  \caption{Hawkes Process Parameters by Cluster}
+  \label{tab:hawkes_parameters}
+\end{table}
+
+\section{Conclusion}
+
+\begin{wrapfigure}{r}{0.4\linewidth}
+  \centering
+  \includegraphics[width=0.9\linewidth]{../results/cluster_visualization.png}
+  \caption{Cluster Visualization}
+  \label{fig:cluster_visualization}
+\end{wrapfigure}
+
+Working with temporal event data presented interesting challenges. The main difficulty was in properly preprocessing the timeline data to ensure that event sequences were correctly ordered and that the Hawkes process parameters could be reliably estimated. Unlike Lab 1 where I focused on survival analysis, this lab required thinking about events as a continuous temporal process rather than just a single outcome.
+
+Another challenge was interpreting the Hawkes process parameters. The visualization of clusters, shown in Figure \ref{fig:cluster_visualization}, helped make the abstract parameters more concrete, though interpreting the reduced dimensions remains challenging as we saw in Lab 1 with PCA.
+
+What I found particularly interesting was how the event rate alone doesn't give us all the information: Cluster 0 had the highest event rate but also the lowest variability, suggesting a more predictable but intense disease progression pattern. In contrast, Cluster 2 with the lowest event rate showed the highest variability, indicating more unpredictable event timing even with fewer overall events.
+
+If I had more time, I would have liked to explore different clustering algorithms to see if alternative groupings would reveal different patterns. I would also investigate the relationship between specific event types and cluster membership to understand not just when events occur, but which types of events characterize each patient group.
+
+Overall, this was a valuable exercise in temporal data analysis and clustering. The combination of clustering with Hawkes process modeling provided better insights into patient event patterns than if done separately. I enjoyed working with a different type of healthcare data compared to Lab 1. Thank you for reading!
+
+\vspace{1cm}
+Here is the link to the GitHub repository: \url{https://github.com/lukybil/uc3m-MLH}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{../results/hawkes_parameters_comparison.png}
+  \caption{Comparison of Hawkes Parameters Across Clusters}
+  \label{fig:hawkes_parameters_comparison}
+\end{figure}
+
+\end{document}
