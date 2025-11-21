@@ -1,8 +1,9 @@
 \documentclass[a4paper,12pt]{article}
-\usepackage[a4paper,top=1.5cm,bottom=1.5cm,left=1.5cm,right=1.5cm]{geometry}
+\usepackage[a4paper,top=1.5cm,bottom=2.5cm,left=1.5cm,right=1.5cm]{geometry}
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{hyperref}
+\usepackage{float}
 
 \title{Lab 3 Report}
 \author{Lukas Bilicky}
@@ -10,25 +11,141 @@
 
 \begin{document}
 
+\maketitle
+
 \section{Methodology}
 
-- started with basic encoder decoder with latent space 64
-- reconstruction loss and kl diergence
+% - started with basic encoder decoder with latent space 64
+% - reconstruction loss and kl diergence
 
-1. improvement - free bits to force the encoder to utilize the latent dimension and not to rely on the decoder "posterior collapse"
+% 1. improvement - free bits to force the encoder to utilize the latent dimension and not to rely on the decoder "posterior collapse"
 
-2. improvement - I saw that the latent space representations where mixing up different digits so I introduced a label conditioning to guide the encoder, this is done using an extra classifier head which learns to predict the class using backpropagation and forces the latent space to explicitely encode class information.
+% 2. improvement - I saw that the latent space representations where mixing up different digits so I introduced a label conditioning to guide the encoder, this is done using an extra classifier head which learns to predict the class using backpropagation and forces the latent space to explicitely encode class information.
 
-2b. Cconditional batch normalisation - Feature-wise Linear Modulation - applies transformations to batch normalization layers, making the model adhere more to the digit labels
+% 2b. Conditional batch normalisation - Feature-wise Linear Modulation - applies transformations to batch normalization layers, making the model adhere more to the digit labels
 
-3. improvement - introduced cross domain to discourage using the latent space separately for both datasets since I saw that the generation worked well but the cross-generation was lacking.
+% 3. improvement - introduced cross domain to discourage using the latent space separately for both datasets since I saw that the generation worked well but the cross-generation was lacking.
 
-4. I saw that the latent space visualization was all over the place, only the digit 0 had a coherent cluster, other digits were mixed up. I introduced Supervised Contrastive Loss to encourage clustering and it worked remarkably well.
+% 4. I saw that the latent space visualization was all over the place, only the digit 0 had a coherent cluster, other digits were mixed up. I introduced Supervised Contrastive Loss to encourage clustering and it worked remarkably well.
 
-priorities - generation, reconstruction or cross-generation?
+% priorities - generation, reconstruction or cross-generation?
 
-current model good at all, worse at generation than a model that is worse at cross-generation.
+% current model good at all, worse at generation than a model that is worse at cross-generation.
 
-\maketitle
+I started with a basic encoder-decoder architecture and the reparametrization trick, with the latent space having 64 dimensions. The loss function included the reconstruction loss and KL-divergence. I measured the real-world performance empirically by analyzing the generated example model results in three categories:
+
+\begin{itemize}
+  \item Reconstruction: re-creation of an input sample when run through the whole encoder-decoder pipeline.
+  \item Generation: creation of samples from the latent representation, can be guided using labels.
+  \item Cross-generation: creation of samples based on a sample from the other dataset.
+\end{itemize}
+
+\subsection{Improvements}
+
+\noindent
+\textbf{Free bits} \\
+The first improvement was the introduction of the free bits to force the encoder to utilize all latent dimensions and not to rely on the decoder, also called the "posterior collapse". The free bits penalize dimensions with KL under the specified threshold. This improved the model performance slightly.
+
+\vspace{0.4cm}
+\noindent
+\textbf{Label conditioning} \\
+I saw that the latent space representations where mixing up different digits so I introduced a label conditioning to guide the encoder. This is done using an extra classifier head which learns to predict the class using backpropagation and forces the latent space to explicitly encode class information.
+
+\vspace{0.4cm}
+\noindent
+\textbf{Conditional batch normalisation} \\
+A way of implementing the concept of Feature-wise Linear Modulation - applies transformations to batch normalization layers, making the model adhere more to the digit labels since it is reminded at each batch normalization steps (which occurs after every convolutional layer) what the class labels are.
+
+\vspace{0.4cm}
+\noindent
+\textbf{Cross-domain loss} \\
+The performance in the cross-domain generation was not sufficient and the produced images were non-sensical. The model needed another goal to encourage the unification of the latent space between the two datesets. I introduced cross-domain loss to discourage using the latent space separately for both datasets.
+
+\vspace{0.4cm}
+\noindent
+\textbf{Supervised contrastive loss}
+After noticing that the latent space visualization was all over the place, and that only the digit 1 had a coherent cluster, whereas other digits were mixed up, I decided to introduce Supervised contrastive loss to encourage clustering and it worked remarkably well. It improved the cross-generation from MNIST to SVHN which has been a major issue since the beginning.
+
+\section{Discussion}
+
+After many iterations at each improvement step I managed to build models which are sufficient at each of the three tasks: reconstruction, generation, and cross-generation. Reconstruction task seemed to be the easiest, maybe also because the reconstruction loss was present from the first iteration onward and also because of the less difficult nature of the task itself. The biggest challenge was to balance the performance of generation and cross-generation because the improvement of one seemed to degrade the quality of the other. The final model is very profficient at cross-generation MNIST $\rightarrow$ SVHN but lacks in generation from the latent representations.
+
+It was also challenging to get a sufficient latent space TSNE representation because before introducing the Supervised contrastive loss, the digits did not form any clear clusters which means that their representations were mixed in the latent space and therefore this decreased the interpretability of the model.
+
+I also spent a lot of time like "a dog chasing its own tail" when I tried to improve the model to improve MNIST $\rightarrow$ SVHN generation because the images were too dark, sometimes even fully black, only to find out that I forgot to denormalize the image data after the model generated a SVHN sample.
+
+The samples of reconstruction, generation and cross-generation for all digits for the three best models will be available in the appendix along a short description of the model and the iteration cycle.
+
+\section{Conclusion}
+
+This was by far the most difficult of the three lab exercises but also the most fun. By tinkering with the inner workings of the model, the model parameters, and the loss function, I learned a lot about machine learning in general. I liked this for me new class of models which do not operate in discrete space but rather on latent representations which enable interesting use cases like creating hybrid samples which are located between two or more centres of latent representations of different labels. Overall I'm not quite satisfied with the model performance but my resources are very limited as I worked on the exercise alone. Check out the appendix for the model result visualizations.
+
+\vspace{1cm}
+Here is the link to the GitHub repository: \url{https://github.com/lukybil/uc3m-MLH}
+
+\pagebreak
+
+\section{Appendix}
+
+\subsection{Early model}
+
+This was an early model which achieved a very good performance at generation and the first one that achieved meaningful results at cross-generation MNIST $\rightarrow$ SVHN. I sadly have not saved the code for this model and neither the config I ran it with. It was before introducing the Supervised contrastive loss so the latent representation was mixed.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{../backup/visualizations/cross_generation_by_digit.png}
+  \caption{Cross-generation results organized by digit class.}
+  \label{fig:cross_generation}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../backup/visualizations/mnist_generation.png}
+  \caption{MNIST generation results from latent representations.}
+  \label{fig:mnist_gen}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../backup/visualizations/svhn_generation.png}
+  \caption{SVHN generation results from latent representations.}
+  \label{fig:svhn_gen}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../backup/visualizations/latent_space_tsne.png}
+  \caption{Latent space TSNE visualization showing the clustering of digit representations.}
+  \label{fig:svhn_gen}
+\end{figure}
+
+\subsection{Longest-trained model}
+This model has been trained for 50 epochs which resulted in an excellent performance in the cross-generation MNIST $\rightarrow$ SVHN task but because the parameter "svhn\_recon\_weight" which equalizes the influence of the SVHN dataset on the loss compared to MNIST being 1.5 (which works well for 20 epochs) the model overfitted and the SVHN $\rightarrow$ MNIST cross-generation produced insufficient results. It is using the Product of Experts as the experts combination function.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.90\textwidth]{../backup/visualizations/comprehensive_visualization_8.png}
+  \caption{Comprehensive visualization of the model performance across different tasks.}
+  \label{fig:comprehensive}
+\end{figure}
+
+\pagebreak
+
+\subsection{Final model}
+This model uses all improvements described in the Methodology. It is using the Mixture of Experts combination function.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../backup/visualizations/comprehensive_visualization.png}
+  \caption{Comprehensive visualization of the model performance across different tasks.}
+  \label{fig:comprehensive}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../backup/visualizations/latent_space_tsne_9.png}
+  \caption{Latent space TSNE visualization showing the clustering of digit representations.}
+  \label{fig:svhn_gen}
+\end{figure}
 
 \end{document}

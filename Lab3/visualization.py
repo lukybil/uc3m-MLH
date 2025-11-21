@@ -25,25 +25,52 @@ def denormalize_svhn(img):
 def save_reconstruction_samples(model, test_loader, config, num_samples=10):
     """
     Save reconstruction samples comparing original and reconstructed images.
+    Collects one sample per digit (0-9) and displays in vertical A4-friendly layout.
     """
     model.eval()
 
-    # Get a batch of test data
-    mnist_imgs, svhn_imgs, labels = next(iter(test_loader))
-    mnist_imgs = mnist_imgs[:num_samples].to(config.device)
-    svhn_imgs = svhn_imgs[:num_samples].to(config.device)
-    labels = labels[:num_samples].to(config.device)
+    # Collect one sample per digit class
+    digit_samples = {i: None for i in range(10)}
 
     with torch.no_grad():
-        if model.use_label_conditioning:
-            output = model(mnist_imgs, svhn_imgs, labels)
-        else:
-            output = model(mnist_imgs, svhn_imgs)
-        mnist_recon = output["mnist_recon"].cpu()
-        svhn_recon = output["svhn_recon"].cpu()
+        for mnist_imgs, svhn_imgs, labels in test_loader:
+            for idx, label in enumerate(labels):
+                label_int = label.item()
+                if digit_samples[label_int] is None:
+                    digit_samples[label_int] = {
+                        "mnist": mnist_imgs[idx : idx + 1].to(config.device),
+                        "svhn": svhn_imgs[idx : idx + 1].to(config.device),
+                        "label": labels[idx : idx + 1].to(config.device),
+                    }
 
-    mnist_imgs = mnist_imgs.cpu()
-    svhn_imgs = svhn_imgs.cpu()
+            # Check if we have all digits
+            if all(v is not None for v in digit_samples.values()):
+                break
+
+    # Reconstruct each digit
+    mnist_imgs_list = []
+    svhn_imgs_list = []
+    mnist_recon_list = []
+    svhn_recon_list = []
+
+    with torch.no_grad():
+        for digit in range(10):
+            sample = digit_samples[digit]
+            if model.use_label_conditioning:
+                output = model(sample["mnist"], sample["svhn"], sample["label"])
+            else:
+                output = model(sample["mnist"], sample["svhn"])
+
+            mnist_imgs_list.append(sample["mnist"].cpu())
+            svhn_imgs_list.append(sample["svhn"].cpu())
+            mnist_recon_list.append(output["mnist_recon"].cpu())
+            svhn_recon_list.append(output["svhn_recon"].cpu())
+
+    # Stack all samples
+    mnist_imgs = torch.cat(mnist_imgs_list, dim=0)
+    svhn_imgs = torch.cat(svhn_imgs_list, dim=0)
+    mnist_recon = torch.cat(mnist_recon_list, dim=0)
+    svhn_recon = torch.cat(svhn_recon_list, dim=0)
 
     # Denormalize images
     mnist_imgs = denormalize_mnist(mnist_imgs)
@@ -201,6 +228,8 @@ def save_cross_generation_samples(model, test_loader, config, num_samples=10):
     plt.savefig(os.path.join(config.results_dir, "mnist_to_svhn.png"), dpi=150)
     plt.close()
 
+    print(f"Cross-generation samples (all digits) saved to {config.results_dir}")
+
     # Plot SVHN to MNIST
     fig, axes = plt.subplots(2, num_samples, figsize=(num_samples * 2, 4))
     for i in range(num_samples):
@@ -220,6 +249,198 @@ def save_cross_generation_samples(model, test_loader, config, num_samples=10):
     plt.close()
 
     print(f"Cross-generation samples saved to {config.results_dir}")
+
+
+def save_comprehensive_visualization(model, test_loader, config):
+    """
+    Save a comprehensive visualization with all tasks on one A4 page:
+    - Reconstruction (10 digits in rows)
+    - Generation (10 digits in rows)
+    - Cross-generation (10 digits in rows)
+    """
+    model.eval()
+
+    # Collect one sample per digit class
+    digit_samples = {i: None for i in range(10)}
+
+    for mnist_imgs, svhn_imgs, labels in test_loader:
+        for idx, label in enumerate(labels):
+            label_int = label.item()
+            if digit_samples[label_int] is None:
+                digit_samples[label_int] = {
+                    "mnist": mnist_imgs[idx : idx + 1].to(config.device),
+                    "svhn": svhn_imgs[idx : idx + 1].to(config.device),
+                    "label": labels[idx : idx + 1].to(config.device),
+                }
+
+        if all(v is not None for v in digit_samples.values()):
+            break
+
+    # 1. RECONSTRUCTION
+    mnist_imgs_list = []
+    svhn_imgs_list = []
+    mnist_recon_list = []
+    svhn_recon_list = []
+
+    with torch.no_grad():
+        for digit in range(10):
+            sample = digit_samples[digit]
+            if model.use_label_conditioning:
+                output = model(sample["mnist"], sample["svhn"], sample["label"])
+            else:
+                output = model(sample["mnist"], sample["svhn"])
+
+            mnist_imgs_list.append(sample["mnist"].cpu())
+            svhn_imgs_list.append(sample["svhn"].cpu())
+            mnist_recon_list.append(output["mnist_recon"].cpu())
+            svhn_recon_list.append(output["svhn_recon"].cpu())
+
+    mnist_imgs = torch.cat(mnist_imgs_list, dim=0)
+    svhn_imgs = torch.cat(svhn_imgs_list, dim=0)
+    mnist_recon = torch.cat(mnist_recon_list, dim=0)
+    svhn_recon = torch.cat(svhn_recon_list, dim=0)
+
+    # 2. GENERATION
+    with torch.no_grad():
+        if model.use_label_conditioning:
+            labels = torch.arange(10).to(config.device)
+            output = model.generate(num_samples=10, device=config.device, labels=labels)
+        else:
+            output = model.generate(10, config.device)
+
+        mnist_gen = output["mnist_gen"].cpu()
+        svhn_gen = output["svhn_gen"].cpu()
+
+    # 3. CROSS-GENERATION
+    svhn_gen_from_mnist_list = []
+    mnist_gen_from_svhn_list = []
+
+    with torch.no_grad():
+        for digit in range(10):
+            sample = digit_samples[digit]
+
+            if model.use_label_conditioning:
+                mnist_to_svhn = model.cross_generate(
+                    sample["mnist"], source_type="mnist", labels=sample["label"]
+                )
+                svhn_to_mnist = model.cross_generate(
+                    sample["svhn"], source_type="svhn", labels=sample["label"]
+                )
+            else:
+                mnist_to_svhn = model.cross_generate(
+                    sample["mnist"], source_type="mnist"
+                )
+                svhn_to_mnist = model.cross_generate(sample["svhn"], source_type="svhn")
+
+            svhn_gen_from_mnist_list.append(mnist_to_svhn["mnist_to_svhn"].cpu())
+            mnist_gen_from_svhn_list.append(svhn_to_mnist["svhn_to_mnist"].cpu())
+
+    svhn_gen_from_mnist = torch.cat(svhn_gen_from_mnist_list, dim=0)
+    mnist_gen_from_svhn = torch.cat(mnist_gen_from_svhn_list, dim=0)
+
+    # Denormalize all images
+    mnist_imgs = denormalize_mnist(mnist_imgs)
+    mnist_recon = denormalize_mnist(mnist_recon)
+    svhn_imgs = denormalize_svhn(svhn_imgs)
+    svhn_recon = denormalize_svhn(svhn_recon)
+    mnist_gen = denormalize_mnist(mnist_gen)
+    svhn_gen = denormalize_svhn(svhn_gen)
+    svhn_gen_from_mnist = denormalize_svhn(svhn_gen_from_mnist)
+    mnist_gen_from_svhn = denormalize_mnist(mnist_gen_from_svhn)
+
+    # Create comprehensive A4 layout
+    # Layout: 10 rows x 10 columns
+    # Columns: [MNIST Orig | MNIST Recon | SVHN Orig | SVHN Recon | Gen MNIST | Gen SVHN | Src MNIST | M→S | Src SVHN | S→M]
+    fig, axes = plt.subplots(10, 10, figsize=(8.27, 10))  # A4 portrait
+
+    for digit in range(10):
+        # Reconstruction: MNIST
+        axes[digit, 0].imshow(mnist_imgs[digit].squeeze(), cmap="gray")
+        axes[digit, 0].axis("off")
+        if digit == 0:
+            axes[digit, 0].set_title("M\nOrig", fontsize=7)
+        axes[digit, 0].text(
+            -0.15,
+            0.5,
+            f"{digit}",
+            transform=axes[digit, 0].transAxes,
+            fontsize=8,
+            va="center",
+            ha="right",
+            fontweight="bold",
+        )
+
+        axes[digit, 1].imshow(mnist_recon[digit].squeeze(), cmap="gray")
+        axes[digit, 1].axis("off")
+        if digit == 0:
+            axes[digit, 1].set_title("M\nRecon", fontsize=7)
+
+        axes[digit, 2].imshow(svhn_imgs[digit].permute(1, 2, 0))
+        axes[digit, 2].axis("off")
+        if digit == 0:
+            axes[digit, 2].set_title("S\nOrig", fontsize=7)
+
+        axes[digit, 3].imshow(svhn_recon[digit].permute(1, 2, 0))
+        axes[digit, 3].axis("off")
+        if digit == 0:
+            axes[digit, 3].set_title("S\nRecon", fontsize=7)
+
+        # Generation
+        axes[digit, 4].imshow(mnist_gen[digit].squeeze(), cmap="gray")
+        axes[digit, 4].axis("off")
+        if digit == 0:
+            axes[digit, 4].set_title("Gen\nM", fontsize=7)
+
+        axes[digit, 5].imshow(svhn_gen[digit].permute(1, 2, 0))
+        axes[digit, 5].axis("off")
+        if digit == 0:
+            axes[digit, 5].set_title("Gen\nS", fontsize=7)
+
+        # Cross-generation
+        axes[digit, 6].imshow(mnist_imgs[digit].squeeze(), cmap="gray")
+        axes[digit, 6].axis("off")
+        if digit == 0:
+            axes[digit, 6].set_title("Src\nM", fontsize=7)
+
+        axes[digit, 7].imshow(svhn_gen_from_mnist[digit].permute(1, 2, 0))
+        axes[digit, 7].axis("off")
+        if digit == 0:
+            axes[digit, 7].set_title("M→\nS", fontsize=7)
+
+        axes[digit, 8].imshow(svhn_imgs[digit].permute(1, 2, 0))
+        axes[digit, 8].axis("off")
+        if digit == 0:
+            axes[digit, 8].set_title("Src\nS", fontsize=7)
+
+        axes[digit, 9].imshow(mnist_gen_from_svhn[digit].squeeze(), cmap="gray")
+        axes[digit, 9].axis("off")
+        if digit == 0:
+            axes[digit, 9].set_title("S→\nM", fontsize=7)
+
+    # Add section dividers with text
+    fig.text(0.195, 0.965, "Reconstruction", ha="center", fontsize=9, fontweight="bold")
+    fig.text(0.485, 0.965, "Generation", ha="center", fontsize=9, fontweight="bold")
+    fig.text(
+        0.755, 0.965, "Cross-Generation", ha="center", fontsize=9, fontweight="bold"
+    )
+
+    plt.suptitle(
+        "Multi-View VAE: All Tasks (Digits 0-9)",
+        fontsize=11,
+        y=0.995,
+        fontweight="bold",
+    )
+    plt.subplots_adjust(
+        left=0.02, right=1.0, top=0.93, bottom=0.01, hspace=0.01, wspace=0.05
+    )
+    plt.savefig(
+        os.path.join(config.results_dir, "comprehensive_visualization.png"),
+        dpi=150,
+        bbox_inches="tight",
+    )
+    plt.close()
+
+    print(f"Comprehensive visualization saved to {config.results_dir}")
 
 
 def visualize_latent_space(model, test_loader, config, num_samples=1000):

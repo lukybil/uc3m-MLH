@@ -172,6 +172,7 @@ def vae_loss(
     # auxiliary classifier loss to enforce label-informative latent codes
     clf_loss = 0.0
     if classifier_logits is not None and true_labels is not None:
+        # applies softmax internally
         clf_loss = F.cross_entropy(classifier_logits, true_labels, reduction="sum")
 
     # domain loss for alignment with labels

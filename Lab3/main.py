@@ -9,6 +9,7 @@ from visualization import (
     save_reconstruction_samples,
     save_generation_samples,
     save_cross_generation_samples,
+    save_comprehensive_visualization,
     visualize_latent_space,
     plot_training_history,
 )
@@ -46,9 +47,10 @@ def main(args):
     print(f"Training samples: {len(train_loader.dataset)}")
     print(f"Test samples: {len(test_loader.dataset)}")
 
-    # verify label mapping
-    verify_label_mapping(train_loader, test_loader, config)
-    visualize_paired_samples(train_loader, config, num_samples=5)
+    if args.mode == "train":
+        # verify label mapping
+        verify_label_mapping(train_loader, test_loader, config)
+        visualize_paired_samples(train_loader, config, num_samples=5)
 
     print("\nInitializing model...")
     model = MultiViewVAE(config).to(config.device)
@@ -89,24 +91,27 @@ def main(args):
     if args.mode in ["train", "evaluate"]:
         print("\nGenerating visualizations...")
 
-        print("Reconstruction samples...")
-        save_reconstruction_samples(
-            model, test_loader, config, num_samples=config.num_samples
-        )
+        print("Comprehensive visualization (all tasks on one page)...")
+        save_comprehensive_visualization(model, test_loader, config)
 
-        print("Generation from latent space...")
-        save_generation_samples(model, config, num_samples=config.num_samples)
+        # print("Reconstruction samples...")
+        # save_reconstruction_samples(
+        #     model, test_loader, config, num_samples=config.num_samples
+        # )
 
-        print("Cross-domain generation...")
-        save_cross_generation_samples(
-            model, test_loader, config, num_samples=config.num_samples
-        )
+        # print("Generation from latent space...")
+        # save_generation_samples(model, config, num_samples=config.num_samples)
+
+        # print("Cross-domain generation...")
+        # save_cross_generation_samples(
+        #     model, test_loader, config, num_samples=config.num_samples
+        # )
 
         print("Latent space visualization (t-SNE)...")
         visualize_latent_space(model, test_loader, config)
 
-        print("Cross-generation analysis by digit...")
-        analyze_cross_generation_by_digit(model, test_loader, config)
+        # print("Cross-generation analysis by digit...")
+        # analyze_cross_generation_by_digit(model, test_loader, config)
 
         print(f"\nResults saved to {config.results_dir}")
 

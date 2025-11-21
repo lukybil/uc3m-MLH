@@ -25,20 +25,20 @@ class Config:
     svhn_size = 32
 
     # training configuration
-    num_epochs = 50
+    num_epochs = 25
     learning_rate = 1e-3
 
     # beta scheduling for kl divergence
     beta_start = 0.0
     beta_end = 1.0
-    beta_warmup_epochs = 30
+    beta_warmup_epochs = 15
 
-    gamma = 5.0  # weight for domain loss
+    gamma = 10.0  # weight for domain loss
 
-    free_bits = 0.2  # minimum kl divergence per latent dimension
+    free_bits = 0.3  # minimum kl divergence per latent dimension
 
     contrastive_weight = (
-        5.0  # weight for supervised contrastive loss (improves clustering)
+        3.0  # weight for supervised contrastive loss (improves clustering)
     )
 
     svhn_recon_weight = (

@@ -38,11 +38,6 @@ class ConditionalBatchNorm2d(nn.Module):
 
 
 class Encoder(nn.Module):
-    """
-    Generic encoder that maps input to latent distribution parameters (mu, logvar).
-    Supports optional label conditioning.
-    """
-
     def __init__(
         self, input_channels, input_size, hidden_dim, latent_dim, num_classes=0
     ):
@@ -100,59 +95,7 @@ class Encoder(nn.Module):
         return mu, logvar
 
 
-class Decoder(nn.Module):
-    """
-    Generic decoder that maps latent representation to output.
-    Supports optional label conditioning.
-    """
-
-    def __init__(
-        self, latent_dim, hidden_dim, output_channels, output_size, num_classes=0
-    ):
-        super().__init__()
-
-        self.output_channels = output_channels
-        self.output_size = output_size
-        self.num_classes = num_classes
-
-        self.deconv_input_size = output_size // 8
-        self.deconv_input_dim = 128 * self.deconv_input_size * self.deconv_input_size
-
-        fc_input_dim = latent_dim + num_classes if num_classes > 0 else latent_dim
-        self.fc = nn.Sequential(
-            nn.Linear(fc_input_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, self.deconv_input_dim),
-            nn.ReLU(),
-        )
-
-        self.deconv_layers = nn.Sequential(
-            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(32, output_channels, kernel_size=4, stride=2, padding=1),
-            nn.Tanh(),  # output range [-1, 1] to match normalized inputs
-        )
-
-    def forward(self, z, labels=None):
-        if self.num_classes > 0 and labels is not None:
-            batch_size = z.size(0)
-            labels = labels.to(z.device)
-            label_onehot = torch.zeros(batch_size, self.num_classes, device=z.device)
-            label_onehot.scatter_(1, labels.unsqueeze(1), 1)
-            z = torch.cat([z, label_onehot], dim=1)
-
-        x = self.fc(z)
-        x = x.view(x.size(0), 128, self.deconv_input_size, self.deconv_input_size)
-        x = self.deconv_layers(x)
-
-        return x
-
-
 class MNISTEncoder(Encoder):
-    """Encoder for MNIST images."""
-
     def __init__(self, hidden_dim, latent_dim, num_classes=0):
         super().__init__(
             input_channels=1,
@@ -163,18 +106,17 @@ class MNISTEncoder(Encoder):
         )
 
 
-class MNISTDecoder(nn.Module):
-    """Enhanced decoder for MNIST images with FiLM conditioning matching SVHN decoder architecture."""
-
-    def __init__(self, latent_dim, hidden_dim, num_classes=0):
+class Decoder(nn.Module):
+    def __init__(self, latent_dim, hidden_dim, output_channels, num_classes=0):
         super().__init__()
 
         self.latent_dim = latent_dim
         self.hidden_dim = hidden_dim
+        self.output_channels = output_channels
         self.num_classes = num_classes
         self.output_size = 32
 
-        self.deconv_input_size = 4  # start with 4x4
+        self.deconv_input_size = 4
         self.deconv_input_dim = 128 * self.deconv_input_size * self.deconv_input_size
 
         fc_input_dim = latent_dim + num_classes if num_classes > 0 else latent_dim
@@ -185,22 +127,15 @@ class MNISTDecoder(nn.Module):
             nn.ReLU(),
         )
 
-        # FiLM-style conditional batch norm
-        self.deconv1 = nn.ConvTranspose2d(
-            128, 128, kernel_size=4, stride=2, padding=1
-        )  # 4x4 -> 8x8
+        self.deconv1 = nn.ConvTranspose2d(128, 128, kernel_size=4, stride=2, padding=1)
         self.cbn1 = ConditionalBatchNorm2d(128, num_classes)
         self.relu1 = nn.ReLU()
 
-        self.deconv2 = nn.ConvTranspose2d(
-            128, 128, kernel_size=4, stride=2, padding=1
-        )  # 8x8 -> 16x16
+        self.deconv2 = nn.ConvTranspose2d(128, 128, kernel_size=4, stride=2, padding=1)
         self.cbn2 = ConditionalBatchNorm2d(128, num_classes)
         self.relu2 = nn.ReLU()
 
-        self.deconv3 = nn.ConvTranspose2d(
-            128, 64, kernel_size=4, stride=2, padding=1
-        )  # 16x16 -> 32x32
+        self.deconv3 = nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1)
         self.cbn3 = ConditionalBatchNorm2d(64, num_classes)
         self.relu3 = nn.ReLU()
 
@@ -208,13 +143,10 @@ class MNISTDecoder(nn.Module):
         self.cbn4 = ConditionalBatchNorm2d(32, num_classes)
         self.relu4 = nn.ReLU()
 
-        self.final = nn.Conv2d(
-            32, 1, kernel_size=3, padding=1
-        )  # 1 channel for grayscale
-        self.activation = nn.Tanh()  # output range [-1, 1]
+        self.final = nn.Conv2d(32, output_channels, kernel_size=3, padding=1)
+        self.activation = nn.Tanh()
 
     def forward(self, z, labels=None):
-        # Concatenate one-hot encoded labels if provided
         if self.num_classes > 0 and labels is not None:
             batch_size = z.size(0)
             labels = labels.to(z.device)
@@ -225,7 +157,6 @@ class MNISTDecoder(nn.Module):
         x = self.fc(z)
         x = x.view(x.size(0), 128, self.deconv_input_size, self.deconv_input_size)
 
-        # Apply conditional deconvolutions with FiLM
         if self.num_classes > 0 and labels is not None:
             x = self.deconv1(x)
             x = self.cbn1(x, label_onehot)
@@ -251,9 +182,17 @@ class MNISTDecoder(nn.Module):
         return x
 
 
-class SVHNEncoder(Encoder):
-    """Encoder for SVHN images."""
+class MNISTDecoder(Decoder):
+    def __init__(self, latent_dim, hidden_dim, num_classes=0):
+        super().__init__(
+            latent_dim=latent_dim,
+            hidden_dim=hidden_dim,
+            output_channels=1,
+            num_classes=num_classes,
+        )
 
+
+class SVHNEncoder(Encoder):
     def __init__(self, hidden_dim, latent_dim, num_classes=0):
         super().__init__(
             input_channels=3,
@@ -264,84 +203,11 @@ class SVHNEncoder(Encoder):
         )
 
 
-class SVHNDecoder(nn.Module):
-    """Enhanced decoder for SVHN images with FiLM conditioning and deeper architecture."""
-
+class SVHNDecoder(Decoder):
     def __init__(self, latent_dim, hidden_dim, num_classes=0):
-        super().__init__()
-
-        self.latent_dim = latent_dim
-        self.hidden_dim = hidden_dim
-        self.num_classes = num_classes
-        self.output_size = 32
-
-        self.deconv_input_size = 4  # start with 4x4
-        self.deconv_input_dim = 128 * self.deconv_input_size * self.deconv_input_size
-
-        fc_input_dim = latent_dim + num_classes if num_classes > 0 else latent_dim
-        self.fc = nn.Sequential(
-            nn.Linear(fc_input_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, self.deconv_input_dim),
-            nn.ReLU(),
+        super().__init__(
+            latent_dim=latent_dim,
+            hidden_dim=hidden_dim,
+            output_channels=3,
+            num_classes=num_classes,
         )
-
-        self.deconv1 = nn.ConvTranspose2d(
-            128, 128, kernel_size=4, stride=2, padding=1
-        )  # 4x4 -> 8x8
-        self.cbn1 = ConditionalBatchNorm2d(128, num_classes)
-        self.relu1 = nn.ReLU()
-
-        self.deconv2 = nn.ConvTranspose2d(
-            128, 128, kernel_size=4, stride=2, padding=1
-        )  # 8x8 -> 16x16
-        self.cbn2 = ConditionalBatchNorm2d(128, num_classes)
-        self.relu2 = nn.ReLU()
-
-        self.deconv3 = nn.ConvTranspose2d(
-            128, 64, kernel_size=4, stride=2, padding=1
-        )  # 16x16 -> 32x32
-        self.cbn3 = ConditionalBatchNorm2d(64, num_classes)
-        self.relu3 = nn.ReLU()
-
-        self.refine = nn.Conv2d(64, 32, kernel_size=3, padding=1)
-        self.cbn4 = ConditionalBatchNorm2d(32, num_classes)
-        self.relu4 = nn.ReLU()
-
-        self.final = nn.Conv2d(32, 3, kernel_size=3, padding=1)
-        self.activation = nn.Tanh()  # output range [-1, 1]
-
-    def forward(self, z, labels=None):
-        if self.num_classes > 0 and labels is not None:
-            batch_size = z.size(0)
-            labels = labels.to(z.device)
-            label_onehot = torch.zeros(batch_size, self.num_classes, device=z.device)
-            label_onehot.scatter_(1, labels.unsqueeze(1), 1)
-            z = torch.cat([z, label_onehot], dim=1)
-
-        x = self.fc(z)
-        x = x.view(x.size(0), 128, self.deconv_input_size, self.deconv_input_size)
-
-        if self.num_classes > 0 and labels is not None:
-            x = self.deconv1(x)
-            x = self.cbn1(x, label_onehot)
-            x = self.relu1(x)
-
-            x = self.deconv2(x)
-            x = self.cbn2(x, label_onehot)
-            x = self.relu2(x)
-
-            x = self.deconv3(x)
-            x = self.cbn3(x, label_onehot)
-            x = self.relu3(x)
-
-            x = self.refine(x)
-            x = self.cbn4(x, label_onehot)
-            x = self.relu4(x)
-
-            x = self.final(x)
-            x = self.activation(x)
-        else:
-            x = self.deconv_layers(x)
-
-        return x
