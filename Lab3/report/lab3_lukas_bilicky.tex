@@ -1,0 +1,34 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[a4paper,top=1.5cm,bottom=1.5cm,left=1.5cm,right=1.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+
+\title{Lab 3 Report}
+\author{Lukas Bilicky}
+\date{\today}
+
+\begin{document}
+
+\section{Methodology}
+
+- started with basic encoder decoder with latent space 64
+- reconstruction loss and kl diergence
+
+1. improvement - free bits to force the encoder to utilize the latent dimension and not to rely on the decoder "posterior collapse"
+
+2. improvement - I saw that the latent space representations where mixing up different digits so I introduced a label conditioning to guide the encoder, this is done using an extra classifier head which learns to predict the class using backpropagation and forces the latent space to explicitely encode class information.
+
+2b. Cconditional batch normalisation - Feature-wise Linear Modulation - applies transformations to batch normalization layers, making the model adhere more to the digit labels
+
+3. improvement - introduced cross domain to discourage using the latent space separately for both datasets since I saw that the generation worked well but the cross-generation was lacking.
+
+4. I saw that the latent space visualization was all over the place, only the digit 0 had a coherent cluster, other digits were mixed up. I introduced Supervised Contrastive Loss to encourage clustering and it worked remarkably well.
+
+priorities - generation, reconstruction or cross-generation?
+
+current model good at all, worse at generation than a model that is worse at cross-generation.
+
+\maketitle
+
+\end{document}
