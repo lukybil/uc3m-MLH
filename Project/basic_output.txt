@@ -1,0 +1,382 @@
+
+================================================================================
+MERGED DATA ANALYSIS
+================================================================================
+
+✓ Successfully loaded data: 20466 rows × 138 columns
+
+================================================================================
+BASIC DATASET INFORMATION
+================================================================================
+Number of rows: 20466
+Number of columns: 138
+
+Memory usage: 25.84 MB
+
+--------------------------------------------------------------------------------
+
+COLUMN INFORMATION
+================================================================================
+shape: (138, 5)
+┌─────────────────────────────────┬─────────┬───────┬────────┬────────┐
+│ Column                          ┆ Type    ┆ Nulls ┆ Null % ┆ Unique │
+│ ---                             ┆ ---     ┆ ---   ┆ ---    ┆ ---    │
+│ str                             ┆ str     ┆ i64   ┆ str    ┆ i64    │
+╞═════════════════════════════════╪═════════╪═══════╪════════╪════════╡
+│                                 ┆ Int64   ┆ 0     ┆ 0.0    ┆ 20466  │
+│ center_id                       ┆ String  ┆ 0     ┆ 0.0    ┆ 4      │
+│ patient_id                      ┆ Int64   ┆ 0     ┆ 0.0    ┆ 19445  │
+│ date_of_birth                   ┆ Date    ┆ 20466 ┆ 100.0  ┆ 1      │
+│ sex                             ┆ String  ┆ 0     ┆ 0.0    ┆ 2      │
+│ …                               ┆ …       ┆ …     ┆ …      ┆ …      │
+│ professional_recommendation_cl… ┆ Float64 ┆ 0     ┆ 0.0    ┆ 5      │
+│ algorithm_professional_agreeme… ┆ Float64 ┆ 0     ┆ 0.0    ┆ 2      │
+│ completion_date                 ┆ Date    ┆ 20466 ┆ 100.0  ┆ 1      │
+│ results_date                    ┆ Date    ┆ 20466 ┆ 100.0  ┆ 1      │
+│ evaluation_date                 ┆ Date    ┆ 0     ┆ 0.0    ┆ 342    │
+└─────────────────────────────────┴─────────┴───────┴────────┴────────┘
+
+--------------------------------------------------------------------------------
+
+NUMERIC COLUMNS SUMMARY
+================================================================================
+Found 75 numeric columns
+
+shape: (9, 76)
+┌───────────┬───────────┬───────────┬───────────┬───┬───────────┬───────────┬───────────┬──────────┐
+│ statistic ┆           ┆ patient_i ┆ who5_felt ┆ … ┆ patient_i ┆ algorithm ┆ professio ┆ algorith │
+│ ---       ┆ ---       ┆ d         ┆ _cheerful ┆   ┆ d_2       ┆ _recommen ┆ nal_recom ┆ m_profes │
+│ str       ┆ f64       ┆ ---       ┆ _and_in_g ┆   ┆ ---       ┆ dation    ┆ mendation ┆ sional_a │
+│           ┆           ┆ f64       ┆ ood…      ┆   ┆ f64       ┆ ---       ┆ _cl…      ┆ greeme…  │
+│           ┆           ┆           ┆ ---       ┆   ┆           ┆ f64       ┆ ---       ┆ ---      │
+│           ┆           ┆           ┆ f64       ┆   ┆           ┆           ┆ f64       ┆ f64      │
+╞═══════════╪═══════════╪═══════════╪═══════════╪═══╪═══════════╪═══════════╪═══════════╪══════════╡
+│ count     ┆ 20466.0   ┆ 20466.0   ┆ 20464.0   ┆ … ┆ 20466.0   ┆ 20466.0   ┆ 20466.0   ┆ 20466.0  │
+│ null_coun ┆ 0.0       ┆ 0.0       ┆ 2.0       ┆ … ┆ 0.0       ┆ 0.0       ┆ 0.0       ┆ 0.0      │
+│ t         ┆           ┆           ┆           ┆   ┆           ┆           ┆           ┆          │
+│ mean      ┆ 10232.5   ┆ 2.5779e6  ┆ 2.455874  ┆ … ┆ 2.5779e6  ┆ 3.106762  ┆ 2.892407  ┆ 0.561223 │
+│ std       ┆ 5908.1696 ┆ 1.1276e6  ┆ 1.345074  ┆ … ┆ 1.1276e6  ┆ 1.232069  ┆ 1.350464  ┆ 0.49625  │
+│           ┆ 4         ┆           ┆           ┆   ┆           ┆           ┆           ┆          │
+│ min       ┆ 0.0       ┆ 3353.0    ┆ 0.0       ┆ … ┆ 3353.0    ┆ 1.0       ┆ 1.0       ┆ 0.0      │
+│ 25%       ┆ 5116.0    ┆ 1.655548e ┆ 1.0       ┆ … ┆ 1.655548e ┆ 2.0       ┆ 2.0       ┆ 0.0      │
+│           ┆           ┆ 6         ┆           ┆   ┆ 6         ┆           ┆           ┆          │
+│ 50%       ┆ 10233.0   ┆ 2.599525e ┆ 2.0       ┆ … ┆ 2.599525e ┆ 4.0       ┆ 3.0       ┆ 1.0      │
+│           ┆           ┆ 6         ┆           ┆   ┆ 6         ┆           ┆           ┆          │
+│ 75%       ┆ 15349.0   ┆ 3.657839e ┆ 4.0       ┆ … ┆ 3.657839e ┆ 4.0       ┆ 4.0       ┆ 1.0      │
+│           ┆           ┆ 6         ┆           ┆   ┆ 6         ┆           ┆           ┆          │
+│ max       ┆ 20465.0   ┆ 4.284411e ┆ 5.0       ┆ … ┆ 4.284411e ┆ 5.0       ┆ 5.0       ┆ 1.0      │
+│           ┆           ┆ 6         ┆           ┆   ┆ 6         ┆           ┆           ┆          │
+└───────────┴───────────┴───────────┴───────────┴───┴───────────┴───────────┴───────────┴──────────┘
+
+--------------------------------------------------------------------------------
+
+CATEGORICAL COLUMNS SUMMARY (Top 10 by unique values)
+================================================================================
+Found 51 categorical columns
+
+
+center_id:
+  Unique values: 4
+  Top 5 values:
+shape: (4, 2)
+┌───────────┬───────┐
+│ center_id ┆ count │
+│ ---       ┆ ---   │
+│ str       ┆ u32   │
+╞═══════════╪═══════╡
+│ FJD       ┆ 10239 │
+│ HGV       ┆ 3664  │
+│ HIE       ┆ 3437  │
+│ HRJC      ┆ 3126  │
+└───────────┴───────┘
+
+sex:
+  Unique values: 2
+  Top 5 values:
+shape: (2, 2)
+┌────────┬───────┐
+│ sex    ┆ count │
+│ ---    ┆ ---   │
+│ str    ┆ u32   │
+╞════════╪═══════╡
+│ Female ┆ 15369 │
+│ Male   ┆ 5097  │
+└────────┴───────┘
+
+death_status:
+  Unique values: 2
+  Top 5 values:
+shape: (2, 2)
+┌──────────────┬───────┐
+│ death_status ┆ count │
+│ ---          ┆ ---   │
+│ str          ┆ u32   │
+╞══════════════╪═══════╡
+│ No           ┆ 20440 │
+│ Si           ┆ 26    │
+└──────────────┴───────┘
+
+location_of_birth:
+  Unique values: 143
+  Top 5 values:
+shape: (5, 2)
+┌────────────────────┬───────┐
+│ location_of_birth  ┆ count │
+│ ---                ┆ ---   │
+│ str                ┆ u32   │
+╞════════════════════╪═══════╡
+│ Madrid             ┆ 10554 │
+│ null               ┆ 2615  │
+│ Castilla y Leon    ┆ 840   │
+│ Castilla-La Mancha ┆ 766   │
+│ Andalusia          ┆ 609   │
+└────────────────────┴───────┘
+
+record_status:
+  Unique values: 8
+  Top 5 values:
+shape: (5, 2)
+┌───────────────────────┬───────┐
+│ record_status         ┆ count │
+│ ---                   ┆ ---   │
+│ str                   ┆ u32   │
+╞═══════════════════════╪═══════╡
+│ null                  ┆ 15889 │
+│ Pending               ┆ 3218  │
+│ Appointment scheduled ┆ 1007  │
+│ Informed              ┆ 240   │
+│ Rejected              ┆ 49    │
+└───────────────────────┴───────┘
+
+requesting_service:
+  Unique values: 39
+  Top 5 values:
+shape: (5, 2)
+┌─────────────────────────┬───────┐
+│ requesting_service      ┆ count │
+│ ---                     ┆ ---   │
+│ str                     ┆ u32   │
+╞═════════════════════════╪═══════╡
+│ null                    ┆ 9240  │
+│ PSYCHIATRY - C          ┆ 4445  │
+│ OBSTETRICS - C          ┆ 4038  │
+│ GENERAL ADMISSIONS      ┆ 1559  │
+│ CLINICAL PSYCHOLOGY - C ┆ 458   │
+└─────────────────────────┴───────┘
+
+response_type:
+  Unique values: 3
+  Top 5 values:
+shape: (3, 2)
+┌─────────────────────────┬───────┐
+│ response_type           ┆ count │
+│ ---                     ┆ ---   │
+│ str                     ┆ u32   │
+╞═════════════════════════╪═══════╡
+│ Patient                 ┆ 17150 │
+│ Clinician               ┆ 3171  │
+│ Patient with assistance ┆ 145   │
+└─────────────────────────┴───────┘
+
+phq9_severity_group_code:
+  Unique values: 4
+  Top 5 values:
+shape: (4, 2)
+┌──────────────────────────┬───────┐
+│ phq9_severity_group_code ┆ count │
+│ ---                      ┆ ---   │
+│ str                      ┆ u32   │
+╞══════════════════════════╪═══════╡
+│ PHQ-9_D                  ┆ 5664  │
+│ PHQ-9_A                  ┆ 5350  │
+│ PHQ-9_B                  ┆ 5129  │
+│ PHQ-9_C                  ┆ 4323  │
+└──────────────────────────┴───────┘
+
+phq9_severity_group_label:
+  Unique values: 7
+  Top 5 values:
+shape: (5, 2)
+┌─────────────────────────────────┬───────┐
+│ phq9_severity_group_label       ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ Moderately severe depressive s… ┆ 5664  │
+│ No or minimal depressive sympt… ┆ 5307  │
+│ Mild depressive symptoms        ┆ 4932  │
+│ Moderate depressive symptoms    ┆ 4061  │
+│ Needs treatment for depression  ┆ 262   │
+└─────────────────────────────────┴───────┘
+
+gad7_severity_group_code:
+  Unique values: 5
+  Top 5 values:
+shape: (5, 2)
+┌──────────────────────────┬───────┐
+│ gad7_severity_group_code ┆ count │
+│ ---                      ┆ ---   │
+│ str                      ┆ u32   │
+╞══════════════════════════╪═══════╡
+│ GAD-7_D                  ┆ 5606  │
+│ GAD-7_C                  ┆ 5148  │
+│ GAD-7_A                  ┆ 4900  │
+│ GAD-7_B                  ┆ 4810  │
+│ GAD7_D                   ┆ 2     │
+└──────────────────────────┴───────┘
+
+--------------------------------------------------------------------------------
+
+KEY FIELDS ANALYSIS
+================================================================================
+
+algorithm_recommendation:
+shape: (5, 2)
+┌──────────────────────────┬───────┐
+│ algorithm_recommendation ┆ count │
+│ ---                      ┆ ---   │
+│ f64                      ┆ u32   │
+╞══════════════════════════╪═══════╡
+│ 4.0                      ┆ 9144  │
+│ 2.0                      ┆ 3347  │
+│ 3.0                      ┆ 3273  │
+│ 1.0                      ┆ 3254  │
+│ 5.0                      ┆ 1448  │
+└──────────────────────────┴───────┘
+  Null values: 0
+
+professional_recommendation_clinician:
+shape: (5, 2)
+┌─────────────────────────────────┬───────┐
+│ professional_recommendation_cl… ┆ count │
+│ ---                             ┆ ---   │
+│ f64                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ 4.0                             ┆ 8514  │
+│ 1.0                             ┆ 4875  │
+│ 2.0                             ┆ 3826  │
+│ 3.0                             ┆ 1821  │
+│ 5.0                             ┆ 1430  │
+└─────────────────────────────────┴───────┘
+  Null values: 0
+
+algorithm_professional_agreement:
+shape: (2, 2)
+┌─────────────────────────────────┬───────┐
+│ algorithm_professional_agreeme… ┆ count │
+│ ---                             ┆ ---   │
+│ f64                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ 1.0                             ┆ 11486 │
+│ 0.0                             ┆ 8980  │
+└─────────────────────────────────┴───────┘
+  Null values: 0
+
+risk_assessment_algorithm:
+shape: (11, 2)
+┌────────────────────────────────┬───────┐
+│ risk_assessment_algorithm      ┆ count │
+│ ---                            ┆ ---   │
+│ str                            ┆ u32   │
+╞════════════════════════════════╪═══════╡
+│ Grado IV                       ┆ 9000  │
+│ Grado II                       ┆ 3301  │
+│ Grado I                        ┆ 3220  │
+│ Grado III                      ┆ 3218  │
+│ Grado V: Requiere atención Urg ┆ 1395  │
+│ …                              ┆ …     │
+│ Grado III: Requiere evaluación ┆ 57    │
+│ Grado I: No psicopatología     ┆ 8     │
+│ Grado II: Psicopatología leve  ┆ 7     │
+│ Faltan Datos                   ┆ 5     │
+│ null                           ┆ 2     │
+└────────────────────────────────┴───────┘
+  Null values: 2
+
+risk_assessment_psychiatrist:
+shape: (2, 2)
+┌──────────────────────────────┬───────┐
+│ risk_assessment_psychiatrist ┆ count │
+│ ---                          ┆ ---   │
+│ str                          ┆ u32   │
+╞══════════════════════════════╪═══════╡
+│ SCREENING STRATIFICATION:    ┆ 20464 │
+│ Results by questionnaire: W  ┆ 2     │
+└──────────────────────────────┴───────┘
+  Null values: 0
+
+phq9_severity_group_label:
+shape: (7, 2)
+┌─────────────────────────────────┬───────┐
+│ phq9_severity_group_label       ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ Moderately severe depressive s… ┆ 5664  │
+│ No or minimal depressive sympt… ┆ 5307  │
+│ Mild depressive symptoms        ┆ 4932  │
+│ Moderate depressive symptoms    ┆ 4061  │
+│ Needs treatment for depression  ┆ 262   │
+│ Needs clinical evaluation       ┆ 197   │
+│ Does not need treatment         ┆ 43    │
+└─────────────────────────────────┴───────┘
+  Null values: 0
+
+gad7_severity_group_label:
+shape: (9, 2)
+┌────────────────────────────────┬───────┐
+│ gad7_severity_group_label      ┆ count │
+│ ---                            ┆ ---   │
+│ str                            ┆ u32   │
+╞════════════════════════════════╪═══════╡
+│ Severe anxiety symptoms        ┆ 5378  │
+│ Moderate anxiety symptoms      ┆ 4999  │
+│ No or minimal anxiety symptoms ┆ 4859  │
+│ Mild anxiety symptoms          ┆ 4728  │
+│ Severe anxiety disorder        ┆ 230   │
+│ Moderate anxiety disorder      ┆ 149   │
+│ Mild anxiety disorder          ┆ 82    │
+│ No anxiety disorder            ┆ 39    │
+│ No anxiety disorder detected   ┆ 2     │
+└────────────────────────────────┴───────┘
+  Null values: 0
+
+cssrs_group_2a_label:
+shape: (3, 2)
+┌──────────────────────────┬───────┐
+│ cssrs_group_2a_label     ┆ count │
+│ ---                      ┆ ---   │
+│ str                      ┆ u32   │
+╞══════════════════════════╪═══════╡
+│ No risk                  ┆ 15656 │
+│ Not assessable by score  ┆ 4725  │
+│ No suicide risk detected ┆ 85    │
+└──────────────────────────┴───────┘
+  Null values: 0
+
+--------------------------------------------------------------------------------
+
+ALGORITHM VS PROFESSIONAL AGREEMENT OVERVIEW
+================================================================================
+
+Agreement Distribution:
+shape: (2, 2)
+┌─────────────────────────────────┬───────┐
+│ algorithm_professional_agreeme… ┆ count │
+│ ---                             ┆ ---   │
+│ f64                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ 1.0                             ┆ 11486 │
+│ 0.0                             ┆ 8980  │
+└─────────────────────────────────┴───────┘
+
+Agreement Rate: 56.1% (11486/20466)
+Disagreement Rate: 43.9% (8980/20466)
+
+--------------------------------------------------------------------------------
+
+GENERATING PHIK CORRELATION MATRIX
+================================================================================
+Converting data to pandas format...
+Calculating phik correlation matrix...
+interval columns not set, guessing: ['', 'patient_id', 'who5_felt_cheerful_and_in_good_spirits', 'who5_felt_calm_and_relaxed', 'who5_felt_active_and_vigorous', 'who5_woke_up_feeling_fresh_and_restored', 'who5_daily_life_filled_with_things_that_interest_me', 'current_psychotropic_medication', 'who5_total_score', 'phq9_1_little_interest_or_pleasure', 'phq9_2_feeling_down_depressed_or_hopeless', 'phq9_3_trouble_sleeping', 'phq9_4_feeling_tired_or_little_energy', 'phq9_5_poor_appetite_or_overeating', 'phq9_6_feeling_bad_about_yourself', 'phq9_7_trouble_concentrating', 'phq9_8_moving_or_speaking_slowly_or_restless', 'phq9_9_thoughts_better_off_dead_or_self_harm', 'phq9_total_score', 'gad7_1_feeling_nervous_anxious_or_on_edge', 'gad7_2_not_being_able_to_stop_or_control_worrying', 'gad7_3_worrying_too_much_about_different_things', 'gad7_4_trouble_relaxing', 'gad7_5_so_restless_that_its_hard_to_sit_still', 'gad7_6_becoming_easily_annoyed_or_irritable', 'gad7_7_feeling_afraid_as_if_something_awful_might_happen', 'gad7_total_score', 'dast_1_used_drugs_not_required_for_medical_reasons', 'dast_2_abuse_more_than_one_drug_at_a_time', 'dast_3_neglected_family_due_to_drug_use', 'dast_4_frequency_illegal_or_unprescribed_drug_use', 'current_smoker', 'dast_total_score', 'auditc_1_frequency_of_drinking', 'auditc_2_drinks_on_typical_drinking_day', 'auditc_3_frequency_six_or_more_drinks', 'auditc_total_score', 'cssrs_wish_to_be_dead', 'cssrs_non_specific_active_suicidal_ideation', 'cssrs_active_ideation_with_plan_or_methods', 'cssrs_active_ideation_with_intent', 'cssrs_active_ideation_with_specific_plan', 'cssrs_suicidal_behavior', 'cssrs_suicidal_behavior_last_3_months', 'cssrs_total_score_1', 'cssrs_result_1a', 'cssrs_result_1b', 'cssrs_result_1c', 'cssrs_result_1d', 'nssi_ever_intentional_self_injury_without_suicidal_intent', 'nssi_last_month_frequency', 'bfi10_extraverted_enthusiastic', 'bfi10_critical_quarrelsome', 'bfi10_dependable_self_disciplined', 'bfi10_anxious_easily_upset', 'bfi10_open_to_new_experiences_and_ideas', 'bfi10_reserved_quiet', 'bfi10_sympathetic_warm', 'bfi10_disorganized_careless', 'bfi10_calm_emotionally_stable', 'bfi10_prefers_traditional_less_creative', 'bfi10_total_score', 'bfi10_agreeableness_score', 'bfi10_conscientiousness_score', 'bfi10_emotional_stability_score', 'bfi10_openness_to_experience_score', 'psychosis_1_thoughts_being_interfered_with_or_controlled', 'psychosis_2_group_conspiring_to_harm_you', 'psychosis_3_something_very_strange_happening', 'psychosis_4_heard_voices_with_no_one_there', 'entry_number', 'patient_id_2', 'algorithm_recommendation', 'professional_recommendation_clinician', 'algorithm_professional_agreement']

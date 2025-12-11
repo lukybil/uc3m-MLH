@@ -1,0 +1,784 @@
+
+================================================================================
+DISAGREEMENT ANALYSIS
+Algorithm vs Professional Recommendations
+================================================================================
+
+✓ Successfully loaded data: 20466 rows × 138 columns
+
+================================================================================
+DISAGREEMENT FILTERING
+================================================================================
+Total records: 20466
+Disagreement cases: 8980 (43.88%)
+Agreement cases: 11486 (56.12%)
+--------------------------------------------------------------------------------
+
+================================================================================
+DISAGREEMENT CASES SUMMARY
+================================================================================
+
+Dataset shape: 8980 rows × 138 columns
+Memory usage: 11.34 MB
+
+Algorithm Recommendations:
+shape: (5, 2)
+┌──────────────────────────┬───────┐
+│ algorithm_recommendation ┆ count │
+│ ---                      ┆ ---   │
+│ f64                      ┆ u32   │
+╞══════════════════════════╪═══════╡
+│ 2.0                      ┆ 2842  │
+│ 4.0                      ┆ 2798  │
+│ 3.0                      ┆ 2735  │
+│ 1.0                      ┆ 474   │
+│ 5.0                      ┆ 131   │
+└──────────────────────────┴───────┘
+
+Professional Recommendations:
+shape: (5, 2)
+┌─────────────────────────────────┬───────┐
+│ professional_recommendation_cl… ┆ count │
+│ ---                             ┆ ---   │
+│ f64                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ 2.0                             ┆ 3321  │
+│ 4.0                             ┆ 2168  │
+│ 1.0                             ┆ 2095  │
+│ 3.0                             ┆ 1283  │
+│ 5.0                             ┆ 113   │
+└─────────────────────────────────┴───────┘
+
+Cross-tabulation (Algorithm vs Professional):
+shape: (20, 3)
+┌──────────────────────────┬─────────────────────────────────┬───────┐
+│ algorithm_recommendation ┆ professional_recommendation_cl… ┆ count │
+│ ---                      ┆ ---                             ┆ ---   │
+│ f64                      ┆ f64                             ┆ u32   │
+╞══════════════════════════╪═════════════════════════════════╪═══════╡
+│ 2.0                      ┆ 1.0                             ┆ 2030  │
+│ 4.0                      ┆ 2.0                             ┆ 1728  │
+│ 3.0                      ┆ 2.0                             ┆ 1482  │
+│ 3.0                      ┆ 4.0                             ┆ 1243  │
+│ 4.0                      ┆ 3.0                             ┆ 905   │
+│ …                        ┆ …                               ┆ …     │
+│ 5.0                      ┆ 3.0                             ┆ 6     │
+│ 3.0                      ┆ 5.0                             ┆ 2     │
+│ 5.0                      ┆ 1.0                             ┆ 1     │
+│ 2.0                      ┆ 5.0                             ┆ 1     │
+│ 1.0                      ┆ 5.0                             ┆ 1     │
+└──────────────────────────┴─────────────────────────────────┴───────┘
+
+--------------------------------------------------------------------------------
+
+DEMOGRAPHIC ANALYSIS OF DISAGREEMENT CASES
+================================================================================
+
+Sex Distribution:
+shape: (2, 2)
+┌────────┬───────┐
+│ sex    ┆ count │
+│ ---    ┆ ---   │
+│ str    ┆ u32   │
+╞════════╪═══════╡
+│ Female ┆ 7009  │
+│ Male   ┆ 1971  │
+└────────┴───────┘
+
+Center Distribution:
+shape: (4, 2)
+┌───────────┬───────┐
+│ center_id ┆ count │
+│ ---       ┆ ---   │
+│ str       ┆ u32   │
+╞═══════════╪═══════╡
+│ FJD       ┆ 5394  │
+│ HGV       ┆ 1233  │
+│ HIE       ┆ 1230  │
+│ HRJC      ┆ 1123  │
+└───────────┴───────┘
+
+Location of Birth:
+shape: (115, 2)
+┌────────────────────┬───────┐
+│ location_of_birth  ┆ count │
+│ ---                ┆ ---   │
+│ str                ┆ u32   │
+╞════════════════════╪═══════╡
+│ Madrid             ┆ 4433  │
+│ null               ┆ 1217  │
+│ Castilla y Leon    ┆ 395   │
+│ Castilla-La Mancha ┆ 349   │
+│ Andalusia          ┆ 285   │
+│ …                  ┆ …     │
+│ Niger              ┆ 1     │
+│ Luxembourg         ┆ 1     │
+│ Moldova            ┆ 1     │
+│ Mongolia           ┆ 1     │
+│ Belarus            ┆ 1     │
+└────────────────────┴───────┘
+
+Death Status:
+shape: (2, 2)
+┌──────────────┬───────┐
+│ death_status ┆ count │
+│ ---          ┆ ---   │
+│ str          ┆ u32   │
+╞══════════════╪═══════╡
+│ No           ┆ 8967  │
+│ Si           ┆ 13    │
+└──────────────┴───────┘
+
+--------------------------------------------------------------------------------
+
+CLINICAL SCORES ANALYSIS
+================================================================================
+
+phq9_total_score:
+shape: (9, 2)
+┌────────────┬──────────────────┐
+│ statistic  ┆ phq9_total_score │
+│ ---        ┆ ---              │
+│ str        ┆ f64              │
+╞════════════╪══════════════════╡
+│ count      ┆ 8980.0           │
+│ null_count ┆ 0.0              │
+│ mean       ┆ 8.700445         │
+│ std        ┆ 5.428577         │
+│ min        ┆ 0.0              │
+│ 25%        ┆ 5.0              │
+│ 50%        ┆ 8.0              │
+│ 75%        ┆ 12.0             │
+│ max        ┆ 27.0             │
+└────────────┴──────────────────┘
+
+phq9_severity_group_label:
+shape: (7, 2)
+┌─────────────────────────────────┬───────┐
+│ phq9_severity_group_label       ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ Mild depressive symptoms        ┆ 3457  │
+│ Moderate depressive symptoms    ┆ 2172  │
+│ No or minimal depressive sympt… ┆ 2033  │
+│ Moderately severe depressive s… ┆ 1173  │
+│ Needs clinical evaluation       ┆ 77    │
+│ Needs treatment for depression  ┆ 47    │
+│ Does not need treatment         ┆ 21    │
+└─────────────────────────────────┴───────┘
+
+gad7_total_score:
+shape: (9, 2)
+┌────────────┬──────────────────┐
+│ statistic  ┆ gad7_total_score │
+│ ---        ┆ ---              │
+│ str        ┆ f64              │
+╞════════════╪══════════════════╡
+│ count      ┆ 8980.0           │
+│ null_count ┆ 0.0              │
+│ mean       ┆ 9.303675         │
+│ std        ┆ 5.334651         │
+│ min        ┆ 0.0              │
+│ 25%        ┆ 5.0              │
+│ 50%        ┆ 9.0              │
+│ 75%        ┆ 13.0             │
+│ max        ┆ 21.0             │
+└────────────┴──────────────────┘
+
+gad7_severity_group_label:
+shape: (9, 2)
+┌────────────────────────────────┬───────┐
+│ gad7_severity_group_label      ┆ count │
+│ ---                            ┆ ---   │
+│ str                            ┆ u32   │
+╞════════════════════════════════╪═══════╡
+│ Mild anxiety symptoms          ┆ 3175  │
+│ Moderate anxiety symptoms      ┆ 2425  │
+│ No or minimal anxiety symptoms ┆ 1644  │
+│ Severe anxiety symptoms        ┆ 1591  │
+│ Severe anxiety disorder        ┆ 49    │
+│ Moderate anxiety disorder      ┆ 44    │
+│ Mild anxiety disorder          ┆ 35    │
+│ No anxiety disorder            ┆ 15    │
+│ No anxiety disorder detected   ┆ 2     │
+└────────────────────────────────┴───────┘
+
+who5_total_score:
+shape: (9, 2)
+┌────────────┬──────────────────┐
+│ statistic  ┆ who5_total_score │
+│ ---        ┆ ---              │
+│ str        ┆ f64              │
+╞════════════╪══════════════════╡
+│ count      ┆ 8976.0           │
+│ null_count ┆ 4.0              │
+│ mean       ┆ 47.958556        │
+│ std        ┆ 20.563647        │
+│ min        ┆ 0.0              │
+│ 25%        ┆ 32.0             │
+│ 50%        ┆ 48.0             │
+│ 75%        ┆ 64.0             │
+│ max        ┆ 100.0            │
+└────────────┴──────────────────┘
+
+cssrs_total_score_1:
+shape: (9, 2)
+┌────────────┬─────────────────────┐
+│ statistic  ┆ cssrs_total_score_1 │
+│ ---        ┆ ---                 │
+│ str        ┆ f64                 │
+╞════════════╪═════════════════════╡
+│ count      ┆ 8978.0              │
+│ null_count ┆ 2.0                 │
+│ mean       ┆ 0.235242            │
+│ std        ┆ 0.782535            │
+│ min        ┆ 0.0                 │
+│ 25%        ┆ 0.0                 │
+│ 50%        ┆ 0.0                 │
+│ 75%        ┆ 0.0                 │
+│ max        ┆ 7.0                 │
+└────────────┴─────────────────────┘
+
+cssrs_group_2a_label:
+shape: (3, 2)
+┌──────────────────────────┬───────┐
+│ cssrs_group_2a_label     ┆ count │
+│ ---                      ┆ ---   │
+│ str                      ┆ u32   │
+╞══════════════════════════╪═══════╡
+│ No risk                  ┆ 7960  │
+│ Not assessable by score  ┆ 984   │
+│ No suicide risk detected ┆ 36    │
+└──────────────────────────┴───────┘
+
+auditc_total_score:
+shape: (9, 2)
+┌────────────┬────────────────────┐
+│ statistic  ┆ auditc_total_score │
+│ ---        ┆ ---                │
+│ str        ┆ f64                │
+╞════════════╪════════════════════╡
+│ count      ┆ 8248.0             │
+│ null_count ┆ 732.0              │
+│ mean       ┆ 1.221387           │
+│ std        ┆ 1.65738            │
+│ min        ┆ 0.0                │
+│ 25%        ┆ 0.0                │
+│ 50%        ┆ 1.0                │
+│ 75%        ┆ 2.0                │
+│ max        ┆ 12.0               │
+└────────────┴────────────────────┘
+
+dast_total_score:
+shape: (9, 2)
+┌────────────┬──────────────────┐
+│ statistic  ┆ dast_total_score │
+│ ---        ┆ ---              │
+│ str        ┆ f64              │
+╞════════════╪══════════════════╡
+│ count      ┆ 8951.0           │
+│ null_count ┆ 29.0             │
+│ mean       ┆ 0.076975         │
+│ std        ┆ 0.336589         │
+│ min        ┆ 0.0              │
+│ 25%        ┆ 0.0              │
+│ 50%        ┆ 0.0              │
+│ 75%        ┆ 0.0              │
+│ max        ┆ 3.0              │
+└────────────┴──────────────────┘
+
+--------------------------------------------------------------------------------
+
+RISK ASSESSMENT COMPARISON
+================================================================================
+
+Algorithm Risk Assessment:
+shape: (10, 2)
+┌────────────────────────────────┬───────┐
+│ risk_assessment_algorithm      ┆ count │
+│ ---                            ┆ ---   │
+│ str                            ┆ u32   │
+╞════════════════════════════════╪═══════╡
+│ Grado IV                       ┆ 2851  │
+│ Grado II                       ┆ 2751  │
+│ Grado III                      ┆ 2631  │
+│ Grado I                        ┆ 510   │
+│ Grado V: Requiere atención Urg ┆ 139   │
+│ Grado IV: Requiere atención en ┆ 57    │
+│ Grado III: Requiere evaluación ┆ 32    │
+│ Grado I: No psicopatología     ┆ 4     │
+│ Grado II: Psicopatología leve  ┆ 3     │
+│ null                           ┆ 2     │
+└────────────────────────────────┴───────┘
+
+Psychiatrist Risk Assessment:
+shape: (2, 2)
+┌──────────────────────────────┬───────┐
+│ risk_assessment_psychiatrist ┆ count │
+│ ---                          ┆ ---   │
+│ str                          ┆ u32   │
+╞══════════════════════════════╪═══════╡
+│ SCREENING STRATIFICATION:    ┆ 8978  │
+│ Results by questionnaire: W  ┆ 2     │
+└──────────────────────────────┴───────┘
+
+Risk Assessment Cross-tabulation:
+shape: (10, 3)
+┌────────────────────────────────┬──────────────────────────────┬───────┐
+│ risk_assessment_algorithm      ┆ risk_assessment_psychiatrist ┆ count │
+│ ---                            ┆ ---                          ┆ ---   │
+│ str                            ┆ str                          ┆ u32   │
+╞════════════════════════════════╪══════════════════════════════╪═══════╡
+│ Grado IV                       ┆ SCREENING STRATIFICATION:    ┆ 2851  │
+│ Grado II                       ┆ SCREENING STRATIFICATION:    ┆ 2751  │
+│ Grado III                      ┆ SCREENING STRATIFICATION:    ┆ 2631  │
+│ Grado I                        ┆ SCREENING STRATIFICATION:    ┆ 510   │
+│ Grado V: Requiere atención Urg ┆ SCREENING STRATIFICATION:    ┆ 139   │
+│ Grado IV: Requiere atención en ┆ SCREENING STRATIFICATION:    ┆ 57    │
+│ Grado III: Requiere evaluación ┆ SCREENING STRATIFICATION:    ┆ 32    │
+│ Grado I: No psicopatología     ┆ SCREENING STRATIFICATION:    ┆ 4     │
+│ Grado II: Psicopatología leve  ┆ SCREENING STRATIFICATION:    ┆ 3     │
+│ null                           ┆ Results by questionnaire: W  ┆ 2     │
+└────────────────────────────────┴──────────────────────────────┴───────┘
+
+--------------------------------------------------------------------------------
+
+MEDICATION & BEHAVIORAL FACTORS
+================================================================================
+
+current_psychotropic_medication:
+shape: (9, 2)
+┌────────────┬─────────────────────────────────┐
+│ statistic  ┆ current_psychotropic_medicatio… │
+│ ---        ┆ ---                             │
+│ str        ┆ f64                             │
+╞════════════╪═════════════════════════════════╡
+│ count      ┆ 8825.0                          │
+│ null_count ┆ 155.0                           │
+│ mean       ┆ 0.314448                        │
+│ std        ┆ 0.464322                        │
+│ min        ┆ 0.0                             │
+│ 25%        ┆ 0.0                             │
+│ 50%        ┆ 0.0                             │
+│ 75%        ┆ 1.0                             │
+│ max        ┆ 1.0                             │
+└────────────┴─────────────────────────────────┘
+
+current_smoker:
+shape: (9, 2)
+┌────────────┬────────────────┐
+│ statistic  ┆ current_smoker │
+│ ---        ┆ ---            │
+│ str        ┆ f64            │
+╞════════════╪════════════════╡
+│ count      ┆ 8565.0         │
+│ null_count ┆ 415.0          │
+│ mean       ┆ 0.160537       │
+│ std        ┆ 0.367125       │
+│ min        ┆ 0.0            │
+│ 25%        ┆ 0.0            │
+│ 50%        ┆ 0.0            │
+│ 75%        ┆ 0.0            │
+│ max        ┆ 1.0            │
+└────────────┴────────────────┘
+
+cigarettes_per_day:
+shape: (5, 2)
+┌────────────────────┬───────┐
+│ cigarettes_per_day ┆ count │
+│ ---                ┆ ---   │
+│ str                ┆ u32   │
+╞════════════════════╪═══════╡
+│ null               ┆ 7586  │
+│ 10 or less         ┆ 829   │
+│ 11 to 20           ┆ 417   │
+│ 21 to 30           ┆ 123   │
+│ 31 or more         ┆ 25    │
+└────────────────────┴───────┘
+
+is_pregnant_woman:
+shape: (3, 2)
+┌─────────────────────────────────┬───────┐
+│ is_pregnant_woman               ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ null                            ┆ 6519  │
+│ Obstetricia. Rueda Obstetrica   ┆ 2296  │
+│ Obstetricia. Rueda Obstetrica … ┆ 165   │
+└─────────────────────────────────┴───────┘
+
+--------------------------------------------------------------------------------
+
+PERSONALITY TRAITS (BFI-10) ANALYSIS
+================================================================================
+
+BFI-10 Scores (Numeric):
+
+bfi10_extraversion_score:
+shape: (9, 2)
+┌────────────┬──────────────────────────┐
+│ statistic  ┆ bfi10_extraversion_score │
+│ ---        ┆ ---                      │
+│ str        ┆ str                      │
+╞════════════╪══════════════════════════╡
+│ count      ┆ 8980                     │
+│ null_count ┆ 0                        │
+│ mean       ┆ null                     │
+│ std        ┆ null                     │
+│ min        ┆ Normal extraversion      │
+│ 25%        ┆ null                     │
+│ 50%        ┆ null                     │
+│ 75%        ┆ null                     │
+│ max        ┆ Very high extraversion   │
+└────────────┴──────────────────────────┘
+
+bfi10_agreeableness_score:
+shape: (9, 2)
+┌────────────┬───────────────────────────┐
+│ statistic  ┆ bfi10_agreeableness_score │
+│ ---        ┆ ---                       │
+│ str        ┆ f64                       │
+╞════════════╪═══════════════════════════╡
+│ count      ┆ 8977.0                    │
+│ null_count ┆ 3.0                       │
+│ mean       ┆ 10.728863                 │
+│ std        ┆ 1.665955                  │
+│ min        ┆ 5.0                       │
+│ 25%        ┆ 10.0                      │
+│ 50%        ┆ 11.0                      │
+│ 75%        ┆ 11.0                      │
+│ max        ┆ 14.0                      │
+└────────────┴───────────────────────────┘
+
+bfi10_conscientiousness_score:
+shape: (9, 2)
+┌────────────┬───────────────────────────────┐
+│ statistic  ┆ bfi10_conscientiousness_score │
+│ ---        ┆ ---                           │
+│ str        ┆ f64                           │
+╞════════════╪═══════════════════════════════╡
+│ count      ┆ 8976.0                        │
+│ null_count ┆ 4.0                           │
+│ mean       ┆ 10.837121                     │
+│ std        ┆ 2.225651                      │
+│ min        ┆ 5.0                           │
+│ 25%        ┆ 9.0                           │
+│ 50%        ┆ 11.0                          │
+│ 75%        ┆ 13.0                          │
+│ max        ┆ 14.0                          │
+└────────────┴───────────────────────────────┘
+
+bfi10_emotional_stability_score:
+shape: (9, 2)
+┌────────────┬─────────────────────────────────┐
+│ statistic  ┆ bfi10_emotional_stability_scor… │
+│ ---        ┆ ---                             │
+│ str        ┆ f64                             │
+╞════════════╪═════════════════════════════════╡
+│ count      ┆ 8977.0                          │
+│ null_count ┆ 3.0                             │
+│ mean       ┆ 9.212432                        │
+│ std        ┆ 2.350235                        │
+│ min        ┆ 5.0                             │
+│ 25%        ┆ 8.0                             │
+│ 50%        ┆ 9.0                             │
+│ 75%        ┆ 11.0                            │
+│ max        ┆ 14.0                            │
+└────────────┴─────────────────────────────────┘
+
+bfi10_openness_to_experience_score:
+shape: (9, 2)
+┌────────────┬─────────────────────────────────┐
+│ statistic  ┆ bfi10_openness_to_experience_s… │
+│ ---        ┆ ---                             │
+│ str        ┆ f64                             │
+╞════════════╪═════════════════════════════════╡
+│ count      ┆ 8972.0                          │
+│ null_count ┆ 8.0                             │
+│ mean       ┆ 9.891997                        │
+│ std        ┆ 2.12486                         │
+│ min        ┆ 5.0                             │
+│ 25%        ┆ 8.0                             │
+│ 50%        ┆ 10.0                            │
+│ 75%        ┆ 11.0                            │
+│ max        ┆ 14.0                            │
+└────────────┴─────────────────────────────────┘
+
+BFI-10 Interpretations (Categorical):
+
+bfi10_agreeableness_interpretation:
+shape: (2, 2)
+┌─────────────────────────────────┬───────┐
+│ bfi10_agreeableness_interpreta… ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ Very high agreeableness         ┆ 8852  │
+│ Normal agreeableness            ┆ 128   │
+└─────────────────────────────────┴───────┘
+
+bfi10_conscientiousness_interpretation:
+shape: (2, 2)
+┌─────────────────────────────────┬───────┐
+│ bfi10_conscientiousness_interp… ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ Very high conscientiousness     ┆ 8457  │
+│ Normal conscientiousness        ┆ 523   │
+└─────────────────────────────────┴───────┘
+
+bfi10_emotional_stability_interpretation:
+shape: (2, 2)
+┌─────────────────────────────────┬───────┐
+│ bfi10_emotional_stability_inte… ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ Very high emotional stability   ┆ 7792  │
+│ Normal emotional stability      ┆ 1188  │
+└─────────────────────────────────┴───────┘
+
+bfi10_openness_to_experience_interpretation:
+shape: (2, 2)
+┌─────────────────────────────────┬───────┐
+│ bfi10_openness_to_experience_i… ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ Very high openness to experien… ┆ 8410  │
+│ Normal openness to experience   ┆ 570   │
+└─────────────────────────────────┴───────┘
+
+--------------------------------------------------------------------------------
+
+SERVICE & STATUS ANALYSIS
+================================================================================
+
+requesting_service:
+shape: (10, 2)
+┌─────────────────────────────────┬───────┐
+│ requesting_service              ┆ count │
+│ ---                             ┆ ---   │
+│ str                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ null                            ┆ 3898  │
+│ OBSTETRICS - C                  ┆ 2304  │
+│ PSYCHIATRY - C                  ┆ 1378  │
+│ GENERAL ADMISSIONS              ┆ 827   │
+│ CLINICAL PSYCHOLOGY - C         ┆ 135   │
+│ PULMONOLOGY - C                 ┆ 74    │
+│ REHABILITATION                  ┆ 73    │
+│ ASSISTED HUMAN REPRODUCTION - … ┆ 68    │
+│ CARDIOLOGY - C                  ┆ 60    │
+│ NEUROPHYSIOLOGY - C             ┆ 57    │
+└─────────────────────────────────┴───────┘
+
+response_type:
+shape: (3, 2)
+┌─────────────────────────┬───────┐
+│ response_type           ┆ count │
+│ ---                     ┆ ---   │
+│ str                     ┆ u32   │
+╞═════════════════════════╪═══════╡
+│ Patient                 ┆ 7482  │
+│ Clinician               ┆ 1449  │
+│ Patient with assistance ┆ 49    │
+└─────────────────────────┴───────┘
+
+record_status:
+shape: (8, 2)
+┌───────────────────────┬───────┐
+│ record_status         ┆ count │
+│ ---                   ┆ ---   │
+│ str                   ┆ u32   │
+╞═══════════════════════╪═══════╡
+│ null                  ┆ 6811  │
+│ Pending               ┆ 1531  │
+│ Appointment scheduled ┆ 518   │
+│ Informed              ┆ 74    │
+│ Rejected              ┆ 22    │
+│ Escalated             ┆ 13    │
+│ Patient not reached   ┆ 6     │
+│ Recorded              ┆ 5     │
+└───────────────────────┴───────┘
+
+form_status:
+shape: (1, 2)
+┌─────────────┬───────┐
+│ form_status ┆ count │
+│ ---         ┆ ---   │
+│ str         ┆ u32   │
+╞═════════════╪═══════╡
+│ Completed   ┆ 8980  │
+└─────────────┴───────┘
+
+service:
+shape: (10, 2)
+┌──────────────────────────┬───────┐
+│ service                  ┆ count │
+│ ---                      ┆ ---   │
+│ str                      ┆ u32   │
+╞══════════════════════════╪═══════╡
+│ Psychiatry               ┆ 5190  │
+│ Obstetrics               ┆ 2445  │
+│ Assisted Reproduction    ┆ 475   │
+│ Gynecology               ┆ 351   │
+│ Psychology               ┆ 191   │
+│ Pulmonology              ┆ 94    │
+│ Rehabilitation           ┆ 72    │
+│ Clinical Neurophysiology ┆ 62    │
+│ Cardiology               ┆ 54    │
+│ Endocrinology            ┆ 14    │
+└──────────────────────────┴───────┘
+
+care_circuit:
+shape: (10, 2)
+┌─────────────────────────┬───────┐
+│ care_circuit            ┆ count │
+│ ---                     ┆ ---   │
+│ str                     ┆ u32   │
+╞═════════════════════════╪═══════╡
+│ null                    ┆ 7304  │
+│ Standard                ┆ 775   │
+│ Perinatal               ┆ 578   │
+│ Geriatrics              ┆ 145   │
+│ IVF                     ┆ 134   │
+│ Cardiac rehabilitation  ┆ 18    │
+│ Hyperphagia             ┆ 16    │
+│ Bariatric surgery       ┆ 4     │
+│ Sleep                   ┆ 3     │
+│ Trauma / rehabilitation ┆ 2     │
+└─────────────────────────┴───────┘
+
+package_evaluated:
+shape: (1, 2)
+┌───────────────────┬───────┐
+│ package_evaluated ┆ count │
+│ ---               ┆ ---   │
+│ str               ┆ u32   │
+╞═══════════════════╪═══════╡
+│ Yes               ┆ 8980  │
+└───────────────────┴───────┘
+
+evaluating_user:
+shape: (4, 2)
+┌───────────────────────────┬───────┐
+│ evaluating_user           ┆ count │
+│ ---                       ┆ ---   │
+│ str                       ┆ u32   │
+╞═══════════════════════════╪═══════╡
+│ JAIME CHAMORRO DELMO      ┆ 5015  │
+│ PABLO PORTILLO DE ANTONIO ┆ 3493  │
+│ LAURA MATA ITURRALDE      ┆ 274   │
+│ RAQUEL ALVAREZ GARCIA     ┆ 198   │
+└───────────────────────────┴───────┘
+
+--------------------------------------------------------------------------------
+
+PSYCHOSIS & SELF-HARM ANALYSIS
+================================================================================
+
+Psychosis Symptoms:
+
+psychosis_1_thoughts_being_interfered_with_or_controlled:
+shape: (4, 2)
+┌─────────────────────────────────┬───────┐
+│ psychosis_1_thoughts_being_int… ┆ count │
+│ ---                             ┆ ---   │
+│ f64                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ 0.0                             ┆ 8314  │
+│ 2.0                             ┆ 460   │
+│ 1.0                             ┆ 204   │
+│ null                            ┆ 2     │
+└─────────────────────────────────┴───────┘
+
+psychosis_2_group_conspiring_to_harm_you:
+shape: (4, 2)
+┌─────────────────────────────────┬───────┐
+│ psychosis_2_group_conspiring_t… ┆ count │
+│ ---                             ┆ ---   │
+│ f64                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ 0.0                             ┆ 8367  │
+│ 2.0                             ┆ 325   │
+│ 1.0                             ┆ 285   │
+│ null                            ┆ 3     │
+└─────────────────────────────────┴───────┘
+
+psychosis_3_something_very_strange_happening:
+shape: (4, 2)
+┌─────────────────────────────────┬───────┐
+│ psychosis_3_something_very_str… ┆ count │
+│ ---                             ┆ ---   │
+│ f64                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ 0.0                             ┆ 8257  │
+│ 2.0                             ┆ 381   │
+│ 1.0                             ┆ 338   │
+│ null                            ┆ 4     │
+└─────────────────────────────────┴───────┘
+
+psychosis_4_heard_voices_with_no_one_there:
+shape: (4, 2)
+┌─────────────────────────────────┬───────┐
+│ psychosis_4_heard_voices_with_… ┆ count │
+│ ---                             ┆ ---   │
+│ f64                             ┆ u32   │
+╞═════════════════════════════════╪═══════╡
+│ 0.0                             ┆ 8750  │
+│ 2.0                             ┆ 145   │
+│ 1.0                             ┆ 82    │
+│ null                            ┆ 3     │
+└─────────────────────────────────┴───────┘
+
+Self-Harm Indicators:
+
+nssi_ever_intentional_self_injury_without_suicidal_intent:
+shape: (9, 2)
+┌────────────┬─────────────────────────────────┐
+│ statistic  ┆ nssi_ever_intentional_self_inj… │
+│ ---        ┆ ---                             │
+│ str        ┆ f64                             │
+╞════════════╪═════════════════════════════════╡
+│ count      ┆ 8951.0                          │
+│ null_count ┆ 29.0                            │
+│ mean       ┆ 0.068372                        │
+│ std        ┆ 0.252398                        │
+│ min        ┆ 0.0                             │
+│ 25%        ┆ 0.0                             │
+│ 50%        ┆ 0.0                             │
+│ 75%        ┆ 0.0                             │
+│ max        ┆ 1.0                             │
+└────────────┴─────────────────────────────────┘
+
+nssi_last_month_frequency:
+shape: (9, 2)
+┌────────────┬───────────────────────────┐
+│ statistic  ┆ nssi_last_month_frequency │
+│ ---        ┆ ---                       │
+│ str        ┆ f64                       │
+╞════════════╪═══════════════════════════╡
+│ count      ┆ 696.0                     │
+│ null_count ┆ 8284.0                    │
+│ mean       ┆ 1.320402                  │
+│ std        ┆ 0.754412                  │
+│ min        ┆ 1.0                       │
+│ 25%        ┆ 1.0                       │
+│ 50%        ┆ 1.0                       │
+│ 75%        ┆ 1.0                       │
+│ max        ┆ 5.0                       │
+└────────────┴───────────────────────────┘
+
+--------------------------------------------------------------------------------
+
+✓ Disagreement cases exported to: data/disagreement_cases.csv
+  Rows exported: 8980
+
+================================================================================
+DISAGREEMENT ANALYSIS COMPLETE
+================================================================================
+
