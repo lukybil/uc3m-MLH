@@ -16,7 +16,7 @@ class ModelConfig:
     # ============================================================================
 
     data_path: str = "data/merged.csv"
-    output_dir: str = "decision_tree/results"
+    output_dir: str = "disagreement_model/results"
     random_state: int = 42
     test_size: float = 0.2
 

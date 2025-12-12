@@ -344,7 +344,7 @@ def run_with_custom_config(
     return run_full_pipeline(config)
 
 
-if __name__ == "__main__":
+def main():
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -395,3 +395,7 @@ if __name__ == "__main__":
         )
     elif args.mode == "eval":
         results = run_evaluation_only(model_path=args.model_path)
+
+
+if __name__ == "__main__":
+    main()
