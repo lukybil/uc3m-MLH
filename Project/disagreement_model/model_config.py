@@ -246,6 +246,40 @@ class ModelConfig:
     # Verbose output
     verbose: int = 1  # 0: silent, 1: progress, 2: detailed
 
+    # ============================================================================
+    # ABLATION STUDY SETTINGS
+    # ============================================================================
+
+    # Run ablation study instead of regular training
+    run_ablation_study: bool = False
+
+    # Ablation experiment names to run (empty list = run all)
+    # Options: 'baseline', 'clinical_only', 'no_administrative', 'no_temporal',
+    #          'scores_only', 'core_clinical', 'no_personality',
+    #          'without_<group_name>' for leave-one-out experiments
+    ablation_experiments: List[str] = field(default_factory=list)
+
+    # Use baseline hyperparameters for all ablation experiments
+    # If True, only runs SMAC3 optimization for baseline, then reuses params
+    # If False, optimizes hyperparameters for each ablation experiment
+    use_baseline_params: bool = True
+
+    # Path to baseline model/params (auto-generated if None)
+    baseline_params_path: Optional[str] = None
+
+    # Parallel execution settings for ablation experiments
+    ablation_n_jobs: int = 1  # Number of parallel jobs (1 = sequential, -1 = all cores)
+    ablation_timeout_per_experiment: int = 1800  # Max seconds per experiment (30 min)
+
+    # Statistical significance testing
+    run_mcnemar_test: bool = (
+        True  # Compare predictions with baseline using McNemar's test
+    )
+    mcnemar_alpha: float = 0.05  # Significance level
+
+    # Ablation output directory
+    ablation_output_dir: str = "disagreement_model/results/ablation"
+
     def get_features(self) -> List[str]:
         """Get the list of features based on feature_mode"""
         if self.feature_mode == "all":

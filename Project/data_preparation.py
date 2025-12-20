@@ -251,6 +251,55 @@ class DataPreparator:
 
         return df, feature_cols
 
+    def filter_features_by_groups(
+        self, X: pd.DataFrame, features_to_keep: List[str], verbose: bool = True
+    ) -> pd.DataFrame:
+        """
+        Filter features to only keep specified subset.
+        Used for ablation studies to remove feature groups.
+
+        Args:
+            X: DataFrame with all features
+            features_to_keep: List of feature names to retain
+            verbose: Print filtering information
+
+        Returns:
+            Filtered DataFrame with only specified features
+        """
+        # Handle missingness indicators that may have been added during preprocessing
+        # If a base feature is kept, also keep its missingness indicator
+        available_features = X.columns.tolist()
+        features_with_indicators = []
+
+        for feat in features_to_keep:
+            if feat in available_features:
+                features_with_indicators.append(feat)
+
+            # Check for missingness indicator
+            indicator_name = f"{feat}_missing"
+            if indicator_name in available_features:
+                features_with_indicators.append(indicator_name)
+
+        # Filter to available features
+        final_features = [
+            f for f in features_with_indicators if f in available_features
+        ]
+
+        if verbose and self.config.verbose > 0:
+            n_original = len(available_features)
+            n_requested = len(features_to_keep)
+            n_final = len(final_features)
+            n_indicators = len([f for f in final_features if f.endswith("_missing")])
+
+            print(f"  Feature filtering:")
+            print(f"    Original features: {n_original}")
+            print(f"    Requested features: {n_requested}")
+            print(f"    Final features (with indicators): {n_final}")
+            print(f"    Missingness indicators: {n_indicators}")
+            print(f"    Features removed: {n_original - n_final}")
+
+        return X[final_features].copy()
+
     def handle_missing_data(
         self, X: pd.DataFrame, y: pd.Series, is_training: bool = True
     ) -> pd.DataFrame:
